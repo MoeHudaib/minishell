@@ -36,7 +36,7 @@ char **split_with_quotes(const char *str);
 int has_quote(char *str);
 char **tokenize(char *str);
 t_command *parse_commands(char **tokens);
-void execute_pipeline(t_command *cmd, char **env);
+int execute_pipeline(t_command *cmd, char **env);
 void execute_command(t_command *cmd, char **env);
 t_job *parse_jobs(char **tokens);
 int execute_jobs(t_job *jobs, char **env);

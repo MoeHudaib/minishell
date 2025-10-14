@@ -42,9 +42,7 @@ char	*read_full_input(char *str)
 {
 	char *line;
 	char *temp;
-    char *cwd = ft_strjoin(str, " -> ");
-	char *full = readline(cwd);
-    free(cwd);
+	char *full = readline(str);
 	while (full && has_unclosed_quotes(full))
 	{
 		temp = readline("> ");
