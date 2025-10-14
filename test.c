@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "./parse/parse.h"
+#include "./lexer/quotes.h"
 #include <sys/wait.h>
 #include <signal.h>
 
@@ -11,41 +12,6 @@ void handle_sigint(int sig)
     (void)sig;
     write(1, "\nCaught SIGINT (Ctrl+C)\n", 25);
 }
-
-int has_quote(char *str, char c)
-{
-    int i;
-
-    i = 0;
-    while (str[i])
-    {
-        if (str[i] == c)
-            return (1);
-        i++;
-    }
-    return (0);
-}
-
-int handle_quote(char *str, char c)
-{
-    int i;
-    int counter;
-
-    counter = 0;
-    i = 0;
-    while (str[i])
-    {
-        if (str[i] == c)
-            counter++;
-        i++;
-    }
-    if (counter % 2 == 0)
-        return (1);
-    return (0);
-}
-
-#include <stdlib.h>
-#include <string.h>
 
 static size_t	count_sub(const char *str, const char *sub)
 {
@@ -86,36 +52,54 @@ char	*ft_strreplace(const char *str, const char *sub, const char *replace)
 	strcpy(p, str);
 	return (result);
 }
+
 int main(int ac, char **av, char **env)
 {
-    char pwd[1024];
-    char line[1024];
-    
+    char cwd[1024];
+    getcwd(cwd, sizeof(cwd));
+    char *line;
+
     signal(SIGINT, handle_sigint);
+
     while (1)
-    { 
-        getcwd(pwd, sizeof(pwd));
-        printf("%s -> ", pwd);
-        fflush(stdout);
-        if (!fgets(line, sizeof(line), stdin))
-            break;
-        line[strcspn(line, "\n")] = 0;
-        if (strlen(line) == 0)
-            continue;
-        char **cmd = ft_split(line, ' ');
-        if (!cmd || !cmd[0])
-            continue;
-        int id = fork();
-        if (id == 0)
-        { 
-            char *path = build_path(env, cmd[0]);
-            if (path)
-                execve(path, cmd, env);
-            perror("command not found");
-            exit(1);
+    {
+        line = read_full_input(cwd);
+        if (!line || !*line) { free(line); break; }
+
+        add_history(line);
+
+        char **tokens = split_with_quotes(line);
+
+        t_job *jobs = parse_jobs(tokens);
+
+        execute_jobs(jobs, env);
+
+        // free everything
+        t_job *tmp_job;
+        while (jobs)
+        {
+            tmp_job = jobs->next;
+
+            t_command *cmd = jobs->cmds;
+            t_command *tmp_cmd;
+            while (cmd)
+            {
+                tmp_cmd = cmd->next;
+                for (int i = 0; cmd->args[i]; i++) free(cmd->args[i]);
+                free(cmd->args);
+                if (cmd->infile) free(cmd->infile);
+                if (cmd->outfile) free(cmd->outfile);
+                if (cmd->heredoc) free(cmd->heredoc);
+                free(cmd);
+                cmd = tmp_cmd;
+            }
+
+            free(jobs);
+            jobs = tmp_job;
         }
-        else if (id > 0)
-            wait(NULL);
+
+        for (int i = 0; tokens[i]; i++) free(tokens[i]);
+        free(tokens);
+        free(line);
     }
-    return 0;
 }
