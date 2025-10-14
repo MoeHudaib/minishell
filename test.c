@@ -84,23 +84,15 @@ int main(int ac, char **av, char **env)
     char *cwd;
     cwd = get_hacker_prompt();
     char *line;
-
     signal(SIGINT, handle_sigint);
-
     while (1)
     {
         line = read_full_input(cwd);
         if (!line || !*line) { free(line); continue ; }
-
         add_history(line);
-
         char **tokens = split_with_quotes(line);
-
         t_job *jobs = parse_jobs(tokens);
-
         execute_jobs(jobs, env);
-
-        // free everything
         t_job *tmp_job;
         while (jobs)
         {
@@ -119,11 +111,9 @@ int main(int ac, char **av, char **env)
                 free(cmd);
                 cmd = tmp_cmd;
             }
-
             free(jobs);
             jobs = tmp_job;
         }
-
         for (int i = 0; tokens[i]; i++) free(tokens[i]);
         free(tokens);
         free(line);
