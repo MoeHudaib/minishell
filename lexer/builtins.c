@@ -100,7 +100,6 @@ int run_builtin(t_command *cmd, char ***envp)
         }
         return 0;
     }
-
     // === unset ===
     if (strcmp(cmd->args[0], "unset") == 0)
     {
@@ -108,7 +107,6 @@ int run_builtin(t_command *cmd, char ***envp)
             unsetenv(cmd->args[i]);
         return 0;
     }
-
     return -1;
 }
 
@@ -116,7 +114,6 @@ char *expand_variables(char *input, char **env)
 {
     char *result = malloc(strlen(input) * 4 + 1); // rough allocation
     int ri = 0, i = 0;
-
     while (input[i])
     {
         if (input[i] == '$' && input[i+1] && (isalnum(input[i+1]) || input[i+1] == '_'))

@@ -1,47 +1,4 @@
-#include "quotes.h"
-
-int	has_unclosed_quotes(const char *s)
-{
-	int		i = 0;
-	char	quote = 0;
-
-	while (s[i])
-	{
-		if (s[i] == '\\' && quote != '\'')
-		{
-			if (s[i + 1])
-				i++;
-		}
-		else if (s[i] == '\'' || s[i] == '"')
-		{
-			if (!quote)
-				quote = s[i];
-			else if (quote == s[i])
-				quote = 0;
-		}
-		i++;
-	}
-	return (quote != 0);
-}
-
-char	*read_full_input(char *str)
-{
-	char *line;
-	char *temp;
-	char *full = readline(str);
-	while (full && has_unclosed_quotes(full))
-	{
-		temp = readline("> ");
-		if (!temp)
-			break;
-		char *joined = malloc(strlen(full) + strlen(temp) + 2);
-		sprintf(joined, "%s\n%s", full, temp);
-		free(full);
-		free(temp);
-		full = joined;
-	}
-	return (full);
-}
+#include "lexer.h"
 
 static void skip_spaces(const char *str, int *i)
 {
@@ -103,7 +60,7 @@ static char *parse_word(const char *str, int *i)
         process_char(str, i, buffer, &b, quote);
     }
     buffer[b] = '\0';
-    return strdup(buffer);
+    return ft_strdup(buffer);
 }
 
 char **split_with_quotes(const char *str)
@@ -122,30 +79,3 @@ char **split_with_quotes(const char *str)
     result[count] = NULL;
     return result;
 }
-
-
-
-// int main(void)
-// {
-// 	char *line;
-
-//     char cwd[1024];
-//     getcwd(cwd, 1024);
-// 	while ((line = read_full_input(cwd)))
-// 	{
-// 		if (!*line)
-// 		{
-// 			free(line);
-// 			continue;
-// 		}
-// 		add_history(line);
-//         ft_strtrim(line, "\" '");
-//         int flag = has_quote(line);
-// 		printf("Final input: [%s]\n%d\n", line, flag);
-//         char **str = split_with_quotes(line);
-//         printf("%s\n%s\n", str[0], str[1]);
-// 		free(line);
-// 	}
-// 	printf("exit\n");
-// 	return (0);
-// }

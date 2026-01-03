@@ -212,7 +212,6 @@ void execute_command(t_command *cmd, char **env)
         int ret = apply_redirections_only(cmd);
         exit(ret);
     }
-
     // builtin check
     if (is_builtin(cmd->args[0]))
     {
@@ -272,25 +271,19 @@ int execute_pipeline(t_command *cmd, char **env)
     int fd_in = 0;
     int last_status = 0;
     pid_t last_pid = 0;
-
     while (cmd)
     {
         int pipefd[2];
         if (cmd->next)
             pipe(pipefd);
-
         pid_t pid = fork();
         if (pid == 0)
         {
-            // child redirections
             if (fd_in != 0) { dup2(fd_in, STDIN_FILENO); close(fd_in); }
             if (cmd->next) { close(pipefd[0]); dup2(pipefd[1], STDOUT_FILENO); close(pipefd[1]); }
-
-            // redirections/heredoc for this command
             if (cmd->infile) { int fd = open(cmd->infile, O_RDONLY); dup2(fd, STDIN_FILENO); close(fd); }
             if (cmd->outfile) { int fd = cmd->append ? open(cmd->outfile, O_CREAT|O_WRONLY|O_APPEND,0644) : open(cmd->outfile, O_CREAT|O_WRONLY|O_TRUNC,0644); dup2(fd, STDOUT_FILENO); close(fd); }
             if (cmd->errfile) { int fd = cmd->err_append ? open(cmd->errfile,O_CREAT|O_WRONLY|O_APPEND,0644) : open(cmd->errfile,O_CREAT|O_WRONLY|O_TRUNC,0644); dup2(fd, STDERR_FILENO); close(fd); }
-
             if (cmd->heredoc)
             {
                 int hd_pipe[2]; pipe(hd_pipe);
@@ -306,7 +299,6 @@ int execute_pipeline(t_command *cmd, char **env)
                 dup2(hd_pipe[0], STDIN_FILENO);
                 close(hd_pipe[0]);
             }
-
             char *path = build_path(env, cmd->args[0]);
             if (path) execve(path, cmd->args, env);
             perror(cmd->args[0]);
@@ -318,18 +310,12 @@ int execute_pipeline(t_command *cmd, char **env)
             if (fd_in != 0) close(fd_in);
             if (cmd->next) { close(pipefd[1]); fd_in = pipefd[0]; }
         }
-
         cmd = cmd->next;
     }
-
-    // wait for the last command in pipeline
     int status;
     waitpid(last_pid, &status, 0);
     last_status = WIFEXITED(status) ? WEXITSTATUS(status) : 1;
-
-    // wait for remaining children to prevent zombies
     while (wait(NULL) > 0);
-
     return last_status;
 }
 
@@ -357,14 +343,12 @@ t_job *parse_jobs(char **tokens)
         if (curr_job) curr_job->next = job;
         curr_job = job;
     }
-
     return head;
 }
 
 int execute_jobs(t_job *jobs, char **env)
 {
     int last_status = 0;
-
     while (jobs)
     {
         // skip based on operator
@@ -374,10 +358,8 @@ int execute_jobs(t_job *jobs, char **env)
             jobs = jobs->next;
             continue;
         }
-
         last_status = execute_pipeline(jobs->cmds, env);
         jobs = jobs->next;
     }
-
     return last_status;
 }

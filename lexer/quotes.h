@@ -13,27 +13,25 @@
 # include <readline/history.h>
 
 typedef struct s_command {
-    char **args;        // command + args
-    char *infile;       // stdin '<'
-    char *outfile;      // stdout '>' or '>>'
-    int append;         // 1 if '>>'
-    char *heredoc;      // '<<'
-    char *errfile;      // stderr '2>' or '2>>'
-    int err_append;     // 1 if '2>>'
-    struct s_command *next; // next command in a pipe
+    char **args;
+    char *infile;
+    char *outfile;
+    int append;
+    char *heredoc;
+    char *errfile;
+    int err_append;
+    struct s_command *next;
 } t_command;
 
-
 typedef struct s_job {
-    t_command *cmds;   // commands in a pipeline 
-    int is_and;        // 1 if chained with &&
-    int is_or;         // 1 if chained with ||
-    struct s_job *next; // next job in the command line
+    t_command *cmds;
+    int is_and;
+    int is_or;
+    struct s_job *next;
 } t_job;
 
 char	*read_full_input(char *str);
 char **split_with_quotes(const char *str);
-int has_quote(char *str);
 char **tokenize(char *str);
 t_command *parse_commands(char **tokens);
 int execute_pipeline(t_command *cmd, char **env);

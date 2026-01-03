@@ -97,7 +97,6 @@ int main(int ac, char **av, char **env)
         while (jobs)
         {
             tmp_job = jobs->next;
-
             t_command *cmd = jobs->cmds;
             t_command *tmp_cmd;
             while (cmd)
