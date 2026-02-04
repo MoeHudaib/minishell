@@ -13,7 +13,7 @@
 #define CYAN    "\001\033[1;36m\002"
 #define RESET   "\001\033[0m\002"
 
-// hacker-style prompt generator
+// hack-style prompt generator
 char *get_hacker_prompt()
 {
     char cwd[1024];
@@ -36,7 +36,6 @@ void handle_sigint(int sig)
 {
     (void)sig;
     write(1, "\nCaught SIGINT (Ctrl+C)\n", 25);
-    exit(20);
 }
 
 static size_t	count_sub(const char *str, const char *sub)
@@ -84,9 +83,9 @@ int main(int ac, char **av, char **env)
     char *cwd;
     cwd = get_hacker_prompt();
     char *line;
-    signal(SIGINT, handle_sigint);
     while (1)
     {
+        signal(SIGINT, handle_sigint);
         line = read_full_input(cwd);
         if (!line || !*line) { free(line); continue ; }
         add_history(line);

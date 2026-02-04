@@ -9,8 +9,8 @@ t_lexer *lexer_init(char *data)
     lexer = malloc(sizeof(t_lexer));
     if (!lexer)
         return (NULL);
-    lexer->double_quote = 0;
-    lexer->single_quote = 0;
+    lexer->double_quote = 0; // Make a good use of em to maximize ur profit of tokenization 
+    lexer->single_quote = 0; // Make a good use of em to maximize ur profit of tokenization, They are not being used yet
     lexer->token = ft_strdup(data);
     if (!lexer->token)
     {

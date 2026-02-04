@@ -9,6 +9,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libs/libft/libft.h"
+# include "../parse/parse.h"
 
 typedef struct s_lexer
 {

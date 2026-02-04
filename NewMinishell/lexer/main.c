@@ -1,6 +1,25 @@
 #include <stdio.h>
 #include "lexer.h"
 
+void    organize(t_lexer *tokens)
+{
+    t_lexer *head;
+    char    **env;
+    char *path;
+
+    if (!tokens)
+        return ;
+    head = tokens;
+    while (head)
+    {
+        path = build_path(env, head->token);
+        if (path)
+            printf("\n%s", path);
+        head = head->next;
+    }
+}
+
+
 int main(void)
 {
     char    pwd[1024];
@@ -16,7 +35,8 @@ int main(void)
         if (!tokens)
             return (1);
         add_history(line);
-        print_tokens(tokens);
+        print_tokens(tokens); // Tokens are done here, the next step is to parse them (Organize them in order to be executed)
+
         delete_lexer(&tokens);
         free(line);
     }
