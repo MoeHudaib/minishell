@@ -6,13 +6,13 @@
 /*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 11:08:07 by mhdeeb            #+#    #+#             */
-/*   Updated: 2025/10/08 14:25:27 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2026/02/20 19:06:32 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.h"
 
-char	*try_path(const char *cmd, const char *path)
+char	*try_path(const char *cmd, const char *path)//this function is used to combine the cmd with '/' before the combines it with the path Example: cmd, usr/bin -> usr/bin/cmd
 {
 	char	*new_cmd;
 	char	*new_path;
@@ -29,14 +29,7 @@ char	*try_path(const char *cmd, const char *path)
 	return (new_path);
 }
 
-int	is_valid(const char *path, int flag)
-{
-	if (!path)
-		return (-1);
-	return (access(path, flag));
-}
-
-char	*return_path(char **env)
+char	*return_path(char **env) // done
 {
 	int		i;
 
@@ -54,7 +47,7 @@ char	*return_path(char **env)
 	return (NULL);
 }
 
-char	*free_enp(char **enp)
+char	*free_enp(char **enp) // done 
 {
 	int	i;
 

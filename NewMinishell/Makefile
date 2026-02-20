@@ -10,6 +10,8 @@ SRCS= ./lexer/lexer.c \
 	./lexer/clean.c \
 	./lexer/lexer_init.c \
 	./lexer/lexical_analysis.c \
+	./parser/parse.c \
+	./parser/parse_utils.c \
 	./lexer/main.c 
 
 $(NAME):

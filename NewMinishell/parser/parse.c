@@ -6,14 +6,14 @@
 /*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/05 14:58:16 by mhdeeb            #+#    #+#             */
-/*   Updated: 2026/02/04 11:29:45 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2026/02/20 19:10:20 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.h"
 #include <stdio.h>
 
-static char	*check_path_dir(char **dirs, const char *cmd, int i)
+static char	*check_path_dir(char **dirs, const char *cmd, int i) // done
 {
 	char	*path;
 
@@ -32,7 +32,7 @@ static char	*check_path_dir(char **dirs, const char *cmd, int i)
 	return (NULL);
 }
 
-static char	*find_valid_path(char **dirs, const char *cmd)
+static char	*find_valid_path(char **dirs, const char *cmd) // done 
 {
 	int		i;
 	char	*path;
@@ -65,37 +65,20 @@ char	*build_path(char **env, const char *cmd)
 		return (NULL);
 	if (access(cmd, F_OK) == 0 && access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
-	path_line = return_path(env);
+	path_line = return_path(env); // it loops through env looking for "PATH=" if existed returns it if not returns null
 	if (!path_line)
 		return (NULL);
-	dirs = ft_split(path_line, ':');
+	dirs = ft_split(path_line, ':'); // this splits the "PATH=" into dirs 
 	free(path_line);
 	if (!dirs)
 		return (NULL);
-	path = find_valid_path(dirs, cmd);
+	path = find_valid_path(dirs, cmd); // this loops through all dirs found in "PATH=" in order to look for a valid one then returns it and if none found returns NULL
 	return (path);
 }
-/*
-int	main(int ac, char *av[], char *env[])
-{
-	char	*res = build_path(env, "masooad");
-	printf("valid: %s\n", res);
-	free(res);
-	char *paths = ft_strnstr(env[37], "PATH=",  5);
-	printf("%s\n",paths);
-	char *path = ft_strtrim(paths, "PATH=");
-	printf("%s\n",path);
-	char **spl = ft_split(path, ':');
-	if (!spl)
-		return (1);
-	int i = 0;
-	char	*path1;
-	while (spl[i])
-	{
-		path1 = ft_strjoin(spl[i], "/ls");
-		printf("\n%s\nAccess Found: %d\nAccess exec: %d", path1,
-		 access(path1, F_OK), access(path1, X_OK));
-		i++;
-	}
-}
-*/
+
+// int	main(int ac, char *av[], char *env[])
+// {
+// 	char	*res = build_path(env, "echo");
+// 	printf("valid: %s\n", res);
+// 	free(res);
+// }

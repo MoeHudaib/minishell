@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include "lexer.h"
 
-void    organize(t_lexer *tokens)
+void    organize(t_lexer *tokens, char **env)
 {
     t_lexer *head;
-    char    **env;
     char *path;
 
     if (!tokens)
@@ -14,13 +13,15 @@ void    organize(t_lexer *tokens)
     {
         path = build_path(env, head->token);
         if (path)
-            printf("\n%s", path);
+            printf("%s -> valid\n", path);
+        else
+            printf("%s -> not a valid command\n", head->token);
         head = head->next;
     }
 }
 
 
-int main(void)
+int main(int ac, char **av, char **env)
 {
     char    pwd[1024];
     getcwd(pwd, 1024);
@@ -35,7 +36,10 @@ int main(void)
         if (!tokens)
             return (1);
         add_history(line);
-        print_tokens(tokens); // Tokens are done here, the next step is to parse them (Organize them in order to be executed)
+        organize(tokens, env); // Tokens are done here, the next step is to parse them (Organize them in order to be executed)
+                                // Tokens are organized and now we know if they are a valid commands or not
+                                // The next step is to build the built ins functions then determen if the none valid commands are of them or just not valid fr
+                                // then execute them properly
 
         delete_lexer(&tokens);
         free(line);

@@ -6,7 +6,7 @@
 /*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/05 16:04:30 by mhdeeb            #+#    #+#             */
-/*   Updated: 2025/10/08 14:37:37 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2026/02/20 19:06:39 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 # include "../libs/libft/libft.h"
 
 char	*try_path(const char *cmd, const char *path);
-int		is_valid(const char *path, int flag);
 char	*return_path(char **env);
 char	*free_enp(char **enp);
 char	*build_path(char **env, const char *cmd);
