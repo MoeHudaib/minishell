@@ -12,6 +12,8 @@ SRCS= ./lexer/lexer.c \
 	./lexer/lexical_analysis.c \
 	./parser/parse.c \
 	./parser/parse_utils.c \
+	./builtins/builtins.c \
+	./builtins/pwd.c \
 	./lexer/main.c 
 
 $(NAME):

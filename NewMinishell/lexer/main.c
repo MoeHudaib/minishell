@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "lexer.h"
+#include "../builtins/builtins.h"
 
 void    organize(t_lexer *tokens, char **env)
 {
@@ -13,12 +13,20 @@ void    organize(t_lexer *tokens, char **env)
     {
         path = build_path(env, head->token);
         if (path)
+        {
+            if (!is_builtin(head->token))
+                break ;
             printf("%s -> valid\n", path);
+        }
         else
+        {
+            if (!is_builtin(head->token))
+                break ;
             printf("%s -> not a valid command\n", head->token);
+        }
         head = head->next;
     }
-}
+} // i don't understand the results when running (pwd pwds) and (pwds pwd)
 
 
 int main(int ac, char **av, char **env)
@@ -40,7 +48,6 @@ int main(int ac, char **av, char **env)
                                 // Tokens are organized and now we know if they are a valid commands or not
                                 // The next step is to build the built ins functions then determen if the none valid commands are of them or just not valid fr
                                 // then execute them properly
-
         delete_lexer(&tokens);
         free(line);
     }
