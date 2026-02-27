@@ -42,7 +42,10 @@ int main(int ac, char **av, char **env)
             continue ;
         tokens = lex_line(line);
         if (!tokens)
-            return (1);
+        {
+            free(line);
+            continue ;
+        }
         add_history(line);
         organize(tokens, env); // Tokens are done here, the next step is to parse them (Organize them in order to be executed)
                                 // Tokens are organized and now we know if they are a valid commands or not

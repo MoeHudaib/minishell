@@ -18,6 +18,11 @@ typedef struct s_lexer
     struct s_lexer	*next;
 }   t_lexer;
 
+// Here you have to edit your tokenization technique in order
+// to make every one token represents a line of execution
+// to align with the current execution order and to make it
+// more convenient
+
 char		**split_with_quotes(const char *str);
 t_lexer		*lexer_init(char *data);
 t_lexer		*add_new_token_front(t_lexer **lexer_head, char *data);
