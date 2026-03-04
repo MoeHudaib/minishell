@@ -23,15 +23,13 @@ static void first_child_go(char *path, char **cmd, char **env)
     execve(path, cmd, env);
 }
 
-static void  presetup(char *av1, char **env)
+static void  presetup(char **cmd, char **env)
 {
-    char    **cmd;
     char    *path;
 
     int pid = fork();
     if (pid == 0)
     {
-        cmd = ft_split(av1, ' ');
         path = build_path(env, cmd[0]);
         first_child_go(path, cmd, env);
     }
@@ -43,6 +41,6 @@ int simple_exe(int ac, char **av, char **env)
 {
     int     *fd;
 
-    presetup(av[1], env);
+    presetup(av, env);
     return (0);
 }

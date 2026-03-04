@@ -15,6 +15,7 @@ SRCS= ./lexer/lexer.c \
 	./builtins/builtins.c \
 	./builtins/pwd.c \
 	./exe/simple_exe.c \
+	./lexer/decider.c \
 	./lexer/main.c 
 
 $(NAME):
