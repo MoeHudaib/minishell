@@ -6,7 +6,7 @@
 /*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/05 16:04:30 by mhdeeb            #+#    #+#             */
-/*   Updated: 2026/02/20 21:13:26 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2026/03/05 21:17:29 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,12 @@
  X_OK (execute/search permission)
  F_OK (existence test)
  */
-# include <sys/wait.h>
-# include <unistd.h>
-# include <errno.h>
-# include <stdio.h> 
-# include "../libs/libft/libft.h"
 
-char	*try_path(const char *cmd, const char *path);
-char	*return_path(char **env);
+# include "../lexer/lexer.h"
+
+char	*try_path(char *cmd, char *path);
+char	*return_path(t_env *head);
 char	*free_enp(char **enp);
-char	*build_path(char **env, const char *cmd);
+char	*build_path(t_env **head, char *cmd);
 
 #endif

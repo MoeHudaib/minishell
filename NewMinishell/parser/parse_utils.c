@@ -6,13 +6,13 @@
 /*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/06 11:08:07 by mhdeeb            #+#    #+#             */
-/*   Updated: 2026/02/20 19:06:32 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2026/03/05 21:13:29 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.h"
 
-char	*try_path(const char *cmd, const char *path)//this function is used to combine the cmd with '/' before the combines it with the path Example: cmd, usr/bin -> usr/bin/cmd
+char	*try_path(char *cmd, char *path)//this function is used to combine the cmd with '/' before the combines it with the path Example: cmd, usr/bin -> usr/bin/cmd
 {
 	char	*new_cmd;
 	char	*new_path;
@@ -29,20 +29,18 @@ char	*try_path(const char *cmd, const char *path)//this function is used to comb
 	return (new_path);
 }
 
-char	*return_path(char **env) // done
+char	*return_path(t_env *head) // done
 {
-	int		i;
+	t_env	*current;
 
-	if (!env)
-		return (NULL);
-	i = 0;
-	while (env[i])
+	current = head;
+	while (current)
 	{
-		if (ft_strnstr(env[i], "PATH=", 5) == env[i])
+		if (ft_strnstr(current->key, "PATH", 5) == current->key)
 		{
-			return (ft_strdup(env[i] + 5));
+			return (ft_strdup(current->value));
 		}
-		i++;
+		current = current->next;
 	}
 	return (NULL);
 }

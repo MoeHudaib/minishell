@@ -8,15 +8,10 @@
 # include <signal.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "../parser/parse.h"
+# include "../libs/libft/libft.h"
+# include "../env/env.h"
 
 typedef enum e_decider
-{
-    YES = 1,
-    NO = 0
-}   t_decider;
-
-typedef enum e_type
 {
     YES = 1,
     NO = 0
@@ -32,12 +27,6 @@ typedef struct s_lexer
     struct s_lexer	*next;
 }   t_lexer;
 
-typedef struct s_env
-{
-    char *key; // PATH
-    char *value; // djhsakdh/dasasdsaldmfshg:ksldas/lsad/:
-    struct s_env *next;
-}   t_env;
 // Here you have to edit your tokenization technique in order
 // to make every one token represents a line of execution
 // to align with the current execution order and to make it
@@ -58,3 +47,11 @@ int is_it_simple_exe(char   *line);
 #endif
 
 // sth -> smth -> New
+
+// $Hello
+
+// Mohammad Hudaib
+
+// "My 'name is "'Mohammad Hudaib'", yet im b2' palyer"
+
+// M

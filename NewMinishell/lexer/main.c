@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "../exe/exe.h"
 
-char    **organize(t_lexer *tokens, char **env)
+char    **organize(t_lexer *tokens, t_env **envhead)
 {
     t_lexer *head;
     char *path;
@@ -14,15 +14,15 @@ char    **organize(t_lexer *tokens, char **env)
     cmd = malloc(sizeof(char *) * 1024);
     while (head)
     {
-        path = build_path(env, head->token);
+        path = build_path(envhead, head->token);
         if (path)
         {
-            if (!is_builtin(head->token))
+            if (!is_builtin(head->token, envhead))
                 break ;
         }
         else
         {
-            if (!is_builtin(head->token))
+            if (!is_builtin(head->token, envhead))
                 break ;
         }
         cmd[i++] = head->token;
@@ -40,6 +40,8 @@ int main(int ac, char **av, char **env)
     char    *line;
     char **cmd;
     t_lexer *tokens;
+    t_env *head;
+    head = set_env(env);
     while (1)
     {
         line = read_full_input(pwd);
@@ -52,12 +54,12 @@ int main(int ac, char **av, char **env)
             continue ;
         }
         add_history(line);
-        cmd = organize(tokens, env); // Tokens are done here, the next step is to parse them (Organize them in order to be executed)
+        cmd = organize(tokens, &head); // Tokens are done here, the next step is to parse them (Organize them in order to be executed)
                                 // Tokens are organized and now we know if they are a valid commands or not
                                 // The next step is to build the built ins functions then determen if the none valid commands are of them or just not valid fr
                                 // then execute them properly
         if (is_it_simple_exe(line) == YES)
-            simple_exe(ac, cmd, env);
+            simple_exe(&head, cmd);
         delete_lexer(&tokens);
         free(line);
     }
@@ -68,3 +70,6 @@ it only worked when i freed it inside the main!
 
 must discover the reason in order to understand the proplem correctly.
 */
+
+// ls -> -ls -> -m 
+ 

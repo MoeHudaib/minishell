@@ -16,6 +16,10 @@ SRCS= ./lexer/lexer.c \
 	./builtins/pwd.c \
 	./exe/simple_exe.c \
 	./lexer/decider.c \
+	./env/env.c \
+	./env/export.c \
+	./env/unset.c \
+	./exe/env_to_array.c \
 	./lexer/main.c 
 
 $(NAME):

@@ -8,9 +8,9 @@
 # include <unistd.h>
 # include <ctype.h>
 # include "../parser/parse.h"
-# include "../lexer/lexer.h"
+
 
 int pwd(void);
-int is_builtin(const char *cmd);
+int is_builtin(char *cmd, t_env **head);
 
 #endif

@@ -10,8 +10,10 @@ typedef struct s_fd
 {
     int fd_in;
     int fd_out;
+    t_env   *head;
 }   t_fd;
 
-int simple_exe(int ac, char **av, char **env);
+int simple_exe(t_env **head, char **av);
+char	**env_to_array(t_env *head);
 
 #endif

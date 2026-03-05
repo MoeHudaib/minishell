@@ -6,14 +6,14 @@
 /*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/05 14:58:16 by mhdeeb            #+#    #+#             */
-/*   Updated: 2026/02/20 19:10:20 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2026/03/05 21:13:21 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parse.h"
 #include <stdio.h>
 
-static char	*check_path_dir(char **dirs, const char *cmd, int i) // done
+static char	*check_path_dir(char **dirs, char *cmd, int i) // done
 {
 	char	*path;
 
@@ -32,7 +32,7 @@ static char	*check_path_dir(char **dirs, const char *cmd, int i) // done
 	return (NULL);
 }
 
-static char	*find_valid_path(char **dirs, const char *cmd) // done 
+static char	*find_valid_path(char **dirs, char *cmd) // done 
 {
 	int		i;
 	char	*path;
@@ -55,17 +55,17 @@ static char	*find_valid_path(char **dirs, const char *cmd) // done
 	return (NULL);
 }
 
-char	*build_path(char **env, const char *cmd)
+char	*build_path(t_env **head, char *cmd)
 {
 	char	*path_line;
 	char	**dirs;
 	char	*path;
 
-	if (!env || !cmd)
+	if (!head || !cmd)
 		return (NULL);
 	if (access(cmd, F_OK) == 0 && access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
-	path_line = return_path(env); // it loops through env looking for "PATH=" if existed returns it if not returns null
+	path_line = return_path(*head); // it loops through env looking for "PATH=" if existed returns it if not returns null
 	if (!path_line)
 		return (NULL);
 	dirs = ft_split(path_line, ':'); // this splits the "PATH=" into dirs 
