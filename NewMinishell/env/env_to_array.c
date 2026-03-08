@@ -1,4 +1,4 @@
-#include "exe.h"
+#include "env.h"
 
 static int	env_size(t_env *head)
 {

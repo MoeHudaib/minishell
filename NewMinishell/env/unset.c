@@ -15,14 +15,14 @@ static void	assign(t_env **current, t_env **prev, t_env **head)
 	*current = *head;
 }
 
-void	ft_unset(t_env **head, char *key)
+int	ft_unset(t_env **head, char *key)
 {
 	t_env	*current;
 	t_env	*prev;
 	t_env	*tmp;
 
 	if (!key || !head || !*head)
-		return ;
+		return 1;
 	assign(&current, &prev, head);
 	while (current)
 	{
@@ -42,4 +42,5 @@ void	ft_unset(t_env **head, char *key)
 			current = current->next;
 		}
 	}
+	return (0);
 }

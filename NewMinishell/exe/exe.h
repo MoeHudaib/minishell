@@ -13,7 +13,6 @@ typedef struct s_fd
     t_env   *head;
 }   t_fd;
 
-int simple_exe(t_env **head, char **av);
-char	**env_to_array(t_env *head);
+int execute_command(char **cmd, t_env **env);
 
 #endif

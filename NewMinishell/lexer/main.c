@@ -1,65 +1,110 @@
 #include <stdio.h>
 #include "../exe/exe.h"
 
-char    **organize(t_lexer *tokens, t_env **envhead)
+char **organize(t_lexer *tokens)
 {
-    t_lexer *head;
-    char *path;
     char **cmd;
+    int count = 0;
+    t_lexer *tmp = tokens;
+
+    while (tmp)
+    {
+        count++;
+        tmp = tmp->next;
+    }
+
+    cmd = malloc(sizeof(char *) * (count + 1));
+
     int i = 0;
+    while (tokens)
+    {
+        cmd[i++] = ft_strdup(tokens->token);
+        tokens = tokens->next;
+    }
+
+    cmd[i] = NULL;
+
+    return cmd;
+}
+void organize01(t_lexer *tokens, t_env **head)// If the line to be executed has built-in
+{
+    t_lexer *current;
+    char *line;
 
     if (!tokens)
-        return NULL;
-    head = tokens;
-    cmd = malloc(sizeof(char *) * 1024);
-    while (head)
-    {
-        path = build_path(envhead, head->token);
-        if (path)
-        {
-            if (!is_builtin(head->token, envhead))
-                break ;
-        }
-        else
-        {
-            if (!is_builtin(head->token, envhead))
-                break ;
-        }
-        cmd[i++] = head->token;
-        head = head->next;
-    }
-    cmd[i] = NULL;
-    return (cmd);
-} // i don't understand the results when running (pwd pwds) and (pwds pwd)
+        return;
 
+    current = tokens;
+    line = strdup("");
+
+    if (strncmp(current->token, "export", 6) == 0)
+    {
+        current = current->next;
+        while (current)
+        {
+            char *tmp = line;
+            line = ft_strjoin(tmp, current->token);
+            free(tmp);
+            current = current->next;
+        }
+        ft_export(head, line);
+    }
+    else if (strncmp(current->token, "unset", 5) == 0)
+    {
+        current = current->next;
+        if (current)
+            ft_unset(head, current->token);
+    }
+
+    free(line);
+}
+
+void    prnt_tokens(t_lexer *tokens)
+{
+    t_lexer *current;
+
+    current = tokens;
+    while (current)
+    {
+        printf("%s\n", current->token);
+        current = current->next;
+    }
+}
 
 int main(int ac, char **av, char **env)
 {
-    char    pwd[1024];
-    getcwd(pwd, 1024);
-    char    *line;
-    char **cmd;
+    char *line;
     t_lexer *tokens;
-    t_env *head;
-    head = set_env(env);
+    char **cmd;
+    t_env *env_list;
+    int last_status = 0;
+
+    env_list = set_env(env);
+
     while (1)
     {
-        line = read_full_input(pwd);
+        line = read_full_input("minishell> ");
+
         if (!line)
-            continue ;
+            continue;
+
+        add_history(line);
+
         tokens = lex_line(line);
+
         if (!tokens)
         {
             free(line);
-            continue ;
+            continue;
         }
-        add_history(line);
-        cmd = organize(tokens, &head); // Tokens are done here, the next step is to parse them (Organize them in order to be executed)
-                                // Tokens are organized and now we know if they are a valid commands or not
-                                // The next step is to build the built ins functions then determen if the none valid commands are of them or just not valid fr
-                                // then execute them properly
-        if (is_it_simple_exe(line) == YES)
-            simple_exe(&head, cmd);
+
+        expand_lexer_tokens(tokens, last_status, env_list);
+
+        cmd = organize(tokens);
+
+        last_status = execute_command(cmd, &env_list);
+
+        free_tokens(cmd, NULL, NULL);
         delete_lexer(&tokens);
         free(line);
     }

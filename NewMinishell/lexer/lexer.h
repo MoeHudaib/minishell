@@ -21,9 +21,8 @@ typedef struct s_lexer
 {
 
     char			*token;
-    char            **tokens;
-    int				single_quote;
-    int				double_quote;
+    int				single_quote; // useless till now
+    int				double_quote; // useless till now
     struct s_lexer	*next;
 }   t_lexer;
 

@@ -1,21 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/02/20 19:45:02 by mhdeeb            #+#    #+#             */
-/*   Updated: 2026/02/20 21:10:06 by mhdeeb           ###   ########.fr       */
+/*   Updated: 2026/03/08 21:53:47 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 
-int pwd(void)
+
+int ft_pwd(void)
 {
-    char    pwd[1024];
-    getcwd(pwd, 1024);
-    printf("%s\n", pwd);
+    char cwd[1024];
+
+    if (getcwd(cwd, sizeof(cwd)))
+        printf("%s\n", cwd);
+    else
+        perror("pwd");
+
     return (0);
 }
