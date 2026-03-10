@@ -26,38 +26,38 @@ char **organize(t_lexer *tokens)
 
     return cmd;
 }
-void organize01(t_lexer *tokens, t_env **head)// If the line to be executed has built-in
-{
-    t_lexer *current;
-    char *line;
+// void organize01(t_lexer *tokens, t_env **head)// If the line to be executed has built-in
+// {
+//     t_lexer *current;
+//     char *line;
 
-    if (!tokens)
-        return;
+//     if (!tokens)
+//         return;
 
-    current = tokens;
-    line = strdup("");
+//     current = tokens;
+//     line = strdup("");
 
-    if (strncmp(current->token, "export", 6) == 0)
-    {
-        current = current->next;
-        while (current)
-        {
-            char *tmp = line;
-            line = ft_strjoin(tmp, current->token);
-            free(tmp);
-            current = current->next;
-        }
-        ft_export(head, line);
-    }
-    else if (strncmp(current->token, "unset", 5) == 0)
-    {
-        current = current->next;
-        if (current)
-            ft_unset(head, current->token);
-    }
+//     if (strncmp(current->token, "export", 6) == 0)
+//     {
+//         current = current->next;
+//         while (current)
+//         {
+//             char *tmp = line;
+//             line = ft_strjoin(tmp, current->token);
+//             free(tmp);
+//             current = current->next;
+//         }
+//         ft_export(head, line);
+//     }
+//     else if (strncmp(current->token, "unset", 5) == 0)
+//     {
+//         current = current->next;
+//         if (current)
+//             ft_unset(head, current->token);
+//     }
 
-    free(line);
-}
+//     free(line);
+// }
 
 void    prnt_tokens(t_lexer *tokens)
 {
@@ -99,7 +99,7 @@ int main(int ac, char **av, char **env)
         }
 
         expand_lexer_tokens(tokens, last_status, env_list);
-
+        // cmd = check(tokens);
         cmd = organize(tokens);
 
         last_status = execute_command(cmd, &env_list);

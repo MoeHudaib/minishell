@@ -6,12 +6,11 @@
 # include <stdlib.h>
 # include "../builtins/builtins.h"
 
-typedef struct s_fd
+typedef struct s_exe
 {
-    int fd_in;
-    int fd_out;
+    char **cmd;
     t_env   *head;
-}   t_fd;
+}   t_exe;
 
 int execute_command(char **cmd, t_env **env);
 
