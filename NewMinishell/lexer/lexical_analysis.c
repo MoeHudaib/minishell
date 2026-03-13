@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "../organize.h"
 
 static void skip_spaces(const char *str, int *i)
 {

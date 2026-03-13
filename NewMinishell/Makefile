@@ -13,13 +13,14 @@ SRCS= ./lexer/lexer.c \
 	./parser/parse.c \
 	./parser/parse_utils.c \
 	./builtins/builtins.c \
+	./builtins/decider.c \
 	./builtins/ft_pwd.c \
 	./builtins/ft_exit.c \
 	./builtins/ft_echo.c \
 	./builtins/ft_env.c \
 	./builtins/ft_cd.c \
 	./exe/simple_exe.c \
-	./lexer/decider.c \
+	./lexer/organize.c \
 	./env/env.c \
 	./env/export.c \
 	./env/unset.c \

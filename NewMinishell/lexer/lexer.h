@@ -42,6 +42,7 @@ char		*read_full_input(char *str);
 t_lexer		*lex_line(char *line);
 void		print_tokens(t_lexer *lexer_head);
 int is_it_simple_exe(char   *line);
+char **organize(t_lexer *tokens);
 
 #endif
 

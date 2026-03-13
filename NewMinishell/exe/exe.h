@@ -12,6 +12,9 @@ typedef struct s_exe
     t_env   *head;
 }   t_exe;
 
-int execute_command(char **cmd, t_env **env);
+void execute_command(char **cmd, t_env **env);
+int create_processes(int len_of_exe, int fd[len_of_exe - 1][2],
+                     char ***cmds, t_env **env);
+int work(int len_of_exe, char ***cmds, t_env **env);
 
 #endif

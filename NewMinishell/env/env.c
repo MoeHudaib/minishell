@@ -1,7 +1,4 @@
-#include "env.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "../organize.h"
 
 static t_env	*new_node(char *key, char *value)
 {

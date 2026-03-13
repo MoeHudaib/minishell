@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "../organize.h"
 
 void	*free_tokens(char **tokens, char *line, t_lexer **lexer_head)
 {

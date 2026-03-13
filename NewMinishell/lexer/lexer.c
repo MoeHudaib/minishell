@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "../organize.h"
 
 int	has_unclosed_quotes(const char *s)
 {
@@ -34,7 +34,10 @@ char	*read_full_input(char *str)
 	{
 		temp = readline("> ");
 		if (!temp)
-			break;
+		{
+			free(full);     // free what we have so far
+			return (NULL);  // treat as ctrl+D
+		}
 		char *joined = malloc(strlen(full) + strlen(temp) + 2);
 		sprintf(joined, "%s\n%s", full, temp);
 		free(full);
@@ -56,7 +59,7 @@ static t_lexer	*create_lexer_list(char **tokens)
 	if (!head)
 		return (NULL);
 	current = head;
-	while (tokens[i])
+	while (tokens[i]  && has_complex(tokens[i]) == 0)
 	{
 		current = add_new_token_back(&head, tokens[i++]);
 		if (!current)

@@ -1,4 +1,4 @@
-#include "expander.h"
+#include "../organize.h"
 
 static char *handle_variable(const char *str, int *i, char **env)
 {

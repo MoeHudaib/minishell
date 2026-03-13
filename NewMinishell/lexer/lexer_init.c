@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "../organize.h"
 
 t_lexer *lexer_init(char *data)
 {
