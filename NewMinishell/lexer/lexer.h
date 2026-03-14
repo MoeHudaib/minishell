@@ -17,13 +17,26 @@ typedef enum e_decider
     NO = 0
 }   t_decider;
 
+typedef enum e_token_type
+{
+    TOKEN_WORD,        // echo, hello, filename
+    TOKEN_PIPE,        // |
+    TOKEN_REDIR_IN,    // 
+    TOKEN_REDIR_OUT,   // >
+    TOKEN_REDIR_APPEND,// >>
+    TOKEN_HEREDOC,     // 
+    TOKEN_AND,         // &&
+    TOKEN_OR,          // ||
+    TOKEN_EOF
+}   t_token_type;
+
 typedef struct s_lexer
 {
-
-    char			*token;
-    int				single_quote; // useless till now
-    int				double_quote; // useless till now
-    struct s_lexer	*next;
+    char            *token;
+    t_token_type    type;
+    int             single_quote;
+    int             double_quote;
+    struct s_lexer  *next;
 }   t_lexer;
 
 // Here you have to edit your tokenization technique in order

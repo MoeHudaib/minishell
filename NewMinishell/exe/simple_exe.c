@@ -12,7 +12,7 @@ void execute_command(char **cmd, t_env **env)
     path = build_path(env, cmd[0]);
     if (!path)
     {
-        printf("command not found\n");
+        printf("command not found: %s\n", cmd[0]);
         exit(127);
     }
     execve(path, cmd, env_to_array(*env));

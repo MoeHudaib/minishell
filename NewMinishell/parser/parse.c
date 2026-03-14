@@ -1,83 +1,123 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/05 14:58:16 by mhdeeb            #+#    #+#             */
-/*   Updated: 2026/03/13 06:06:21 by mohammad         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../organize.h"
 
-static char	*check_path_dir(char **dirs, char *cmd, int i) // done
+t_cmd *new_cmd(void)
 {
-	char	*path;
+    t_cmd *cmd;
 
-	path = try_path(cmd, dirs[i]);
-	if (!path)
-	{
-		free_enp(dirs);
-		return (NULL);
-	}
-	if (access(path, F_OK | X_OK) == 0)
-	{
-		free_enp(dirs);
-		return (path);
-	}
-	free(path);
-	return (NULL);
+    cmd = malloc(sizeof(t_cmd));
+    if (!cmd)
+        return (NULL);
+    cmd->args = NULL;
+    cmd->redirs = NULL;
+    cmd->next = NULL;
+    return (cmd);
 }
 
-static char	*find_valid_path(char **dirs, char *cmd) // done 
+void add_arg(t_cmd *cmd, char *arg)
 {
-	int		i;
-	char	*path;
+    char    **new_args;
+    int     i;
 
-	if (!dirs || !cmd)
-	{
-		if (dirs)
-			free_enp(dirs);
-		return (NULL);
-	}
-	i = 0;
-	while (dirs[i])
-	{
-		path = check_path_dir(dirs, cmd, i);
-		if (path)
-			return (path);
-		i++;
-	}
-	free_enp(dirs);
-	return (NULL);
+    i = 0;
+    if (cmd->args)
+        while (cmd->args[i])
+            i++;
+    new_args = malloc(sizeof(char *) * (i + 2));
+    if (!new_args)
+        return ;
+    i = 0;
+    if (cmd->args)
+    {
+        while (cmd->args[i])
+        {
+            new_args[i] = cmd->args[i];
+            i++;
+        }
+        free(cmd->args);
+    }
+    new_args[i] = ft_strdup(arg);
+    new_args[i + 1] = NULL;
+    cmd->args = new_args;
 }
 
-char	*build_path(t_env **head, char *cmd)
+void append_cmd(t_cmd **head, t_cmd *cmd)
 {
-	char	*path_line;
-	char	**dirs;
-	char	*path;
+    t_cmd *current;
 
-	if (!head || !cmd)
-		return (NULL);
-	if (access(cmd, F_OK) == 0 && access(cmd, X_OK) == 0)
-		return (ft_strdup(cmd));
-	path_line = return_path(*head); // it loops through env looking for "PATH=" if existed returns it if not returns null
-	if (!path_line)
-		return (NULL);
-	dirs = ft_split(path_line, ':'); // this splits the "PATH=" into dirs 
-	free(path_line);
-	if (!dirs)
-		return (NULL);
-	path = find_valid_path(dirs, cmd); // this loops through all dirs found in "PATH=" in order to look for a valid one then returns it and if none found returns NULL
-	return (path);
+    if (!*head)
+    {
+        *head = cmd;
+        return ;
+    }
+    current = *head;
+    while (current->next)
+        current = current->next;
+    current->next = cmd;
 }
 
-// int	main(int ac, char *av[], char *env[])
-// {
-// 	char	*res = build_path(env, "echo");
-// 	printf("valid: %s\n", res);
-// 	free(res);
-// }
+int is_redir(t_token_type type)
+{
+    return (type == TOKEN_REDIR_IN ||
+            type == TOKEN_REDIR_OUT ||
+            type == TOKEN_REDIR_APPEND ||
+            type == TOKEN_HEREDOC);
+}
+
+static t_redir *new_redir(t_token_type type, char *file)
+{
+    t_redir *redir;
+
+    redir = malloc(sizeof(t_redir));
+    if (!redir)
+        return (NULL);
+    redir->type = type;
+    redir->file = ft_strdup(file);
+    redir->next = NULL;
+    return (redir);
+}
+
+void add_redir(t_cmd *cmd, t_token_type type, char *file)
+{
+    t_redir *new;
+    t_redir *current;
+
+    new = new_redir(type, file);
+    if (!new)
+        return ;
+    if (!cmd->redirs)
+    {
+        cmd->redirs = new;
+        return ;
+    }
+    current = cmd->redirs;
+    while (current->next)
+        current = current->next;
+    current->next = new;
+}
+
+t_cmd *parse(t_lexer *tokens)
+{
+    t_cmd        *head = NULL;
+    t_cmd        *current = new_cmd();
+    t_token_type redir_type;
+
+    while (tokens)
+    {
+        if (tokens->type == TOKEN_WORD)
+            add_arg(current, tokens->token);
+        else if (tokens->type == TOKEN_PIPE)
+        {
+            append_cmd(&head, current);
+            current = new_cmd();
+        }
+        else if (is_redir(tokens->type))
+        {
+            redir_type = tokens->type;  // save it
+            tokens = tokens->next;      // advance to filename
+            add_redir(current, redir_type, tokens->token);
+        }
+        tokens = tokens->next;
+    }
+    append_cmd(&head, current);
+    return (head);
+}

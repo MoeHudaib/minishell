@@ -1,4 +1,6 @@
 #include "../organize.h"
+# include <readline/readline.h>
+# include <readline/history.h>
 
 int	has_unclosed_quotes(const char *s)
 {
@@ -48,39 +50,44 @@ char	*read_full_input(char *str)
 	return (full);
 }
 
-static t_lexer	*create_lexer_list(char **tokens)
-{
-	t_lexer	*head;
-	t_lexer	*current;
-	int		i;
 
-	i = 0;
-	head = lexer_init(tokens[i++]);
-	if (!head)
-		return (NULL);
-	current = head;
-	while (tokens[i]  && has_complex(tokens[i]) == 0)
-	{
-		current = add_new_token_back(&head, tokens[i++]);
-		if (!current)
-			return (free_tokens(tokens, NULL, &head));
-	}
-	return (head);
+
+static t_lexer *create_lexer_list(char **tokens, t_token_type *types)
+{
+    t_lexer *head;
+    t_lexer *current;
+    int     i;
+
+    i = 0;
+    head = lexer_init(tokens[i], types[i]);
+    if (!head)
+        return (NULL);
+    i++;
+    current = head;
+    while (tokens[i])
+    {
+        current = add_new_token_back(&head, tokens[i], types[i]);
+        if (!current)
+            return (free_tokens(tokens, NULL, &head));
+        i++;
+    }
+    return (head);
 }
 
-t_lexer	*lex_line(char *line)
+t_lexer *lex_line(char *line)
 {
-	t_lexer	*lexer_head;
-	char	**tokens;
+    t_lexer         *lexer_head;
+    char            **tokens;
+    t_token_type    types[1024];
 
-	if (!line)
-		return (NULL);
-	tokens = split_with_quotes(line);
-	if (!tokens)
-		return (NULL);
-	lexer_head = create_lexer_list(tokens);
-	free_tokens(tokens, NULL, NULL);
-	return (lexer_head);
+    if (!line)
+        return (NULL);
+    tokens = split_with_quotes(line, types);
+    if (!tokens)
+        return (NULL);
+    lexer_head = create_lexer_list(tokens, types);
+    free_tokens(tokens, NULL, NULL);
+    return (lexer_head);
 }
 
 void	print_tokens(t_lexer *lexer_head)

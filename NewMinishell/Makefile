@@ -11,15 +11,17 @@ SRCS= ./lexer/lexer.c \
 	./lexer/lexer_init.c \
 	./lexer/lexical_analysis.c \
 	./parser/parse.c \
-	./parser/parse_utils.c \
+	./parser/build_path.c \
+	./parser/build_path_utils.c \
+	./parser/decider.c \
 	./builtins/builtins.c \
-	./builtins/decider.c \
 	./builtins/ft_pwd.c \
 	./builtins/ft_exit.c \
 	./builtins/ft_echo.c \
 	./builtins/ft_env.c \
 	./builtins/ft_cd.c \
 	./exe/simple_exe.c \
+	./exe/multiple_pipes.c \
 	./lexer/organize.c \
 	./env/env.c \
 	./env/export.c \

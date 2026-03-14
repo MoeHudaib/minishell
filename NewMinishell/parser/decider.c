@@ -1,167 +1,63 @@
 #include "../organize.h"
 
-/* counts tokens until pipe or end */
-static int  count_until_pipe(t_lexer *tokens)
-{
-    int     count;
-
-    count = 0;
-    while (tokens && strncmp(tokens->token, "|", 2) != 0)
-    {
-        count++;
-        tokens = tokens->next;
-    }
-    return (count);
-}
-
-/* counts how many pipes = how many commands */
-static int  count_commands(t_lexer *tokens)
-{
-    int     count;
-
-    count = 1;
-    while (tokens)
-    {
-        if (strncmp(tokens->token, "|", 2) == 0)
-            count++;
-        tokens = tokens->next;
-    }
-    return (count);
-}
-
 /* apply redirections for a command before execve */
-static int  apply_redirections(t_lexer *tokens)
+int apply_redirections(t_cmd *cmd)
 {
-    int fd;
+    t_redir *redir;
+    int     fd;
 
-    while (tokens && strncmp(tokens->token, "|", 2) != 0)
+    redir = cmd->redirs;
+    while (redir)
     {
-        if (strncmp(tokens->token, ">", 2) == 0 && tokens->next)
+        if (redir->type == TOKEN_REDIR_OUT)
         {
-            fd = open(tokens->next->token, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            fd = open(redir->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
             if (fd < 0)
                 return (1);
             dup2(fd, STDOUT_FILENO);
             close(fd);
-            tokens = tokens->next;
         }
-        else if (strncmp(tokens->token, ">>", 3) == 0 && tokens->next)
+        else if (redir->type == TOKEN_REDIR_APPEND)
         {
-            fd = open(tokens->next->token, O_WRONLY | O_CREAT | O_APPEND, 0644);
+            fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
             if (fd < 0)
                 return (1);
             dup2(fd, STDOUT_FILENO);
             close(fd);
-            tokens = tokens->next;
         }
-        else if (strncmp(tokens->token, "<", 2) == 0 && tokens->next)
+        else if (redir->type == TOKEN_REDIR_IN)
         {
-            fd = open(tokens->next->token, O_RDONLY);
+            fd = open(redir->file, O_RDONLY);
             if (fd < 0)
                 return (1);
             dup2(fd, STDIN_FILENO);
             close(fd);
-            tokens = tokens->next;
         }
-        else if (strncmp(tokens->token, "<<", 3) == 0 && tokens->next)
+        else if (redir->type == TOKEN_HEREDOC)
         {
-            // heredoc — handled separately, skip for now
-            tokens = tokens->next;
+            // handled separately
         }
-        tokens = tokens->next;
+        redir = redir->next;
     }
     return (0);
 }
 
-/* builds char** from tokens, skipping redirection tokens and their targets */
-char    **organize(t_lexer *tokens)
+/* counts how many commands in the list */
+static int count_commands(t_cmd *cmds)
 {
-    char        **cmd;
-    int         count;
-    int         i;
-    t_lexer     *tmp;
+    int count;
 
     count = 0;
-    tmp = tokens;
-    while (tmp && strncmp(tmp->token, "|", 2) != 0)
+    while (cmds)
     {
-        if (strncmp(tmp->token, ">", 2) == 0
-            || strncmp(tmp->token, ">>", 3) == 0
-            || strncmp(tmp->token, "<", 2) == 0
-            || strncmp(tmp->token, "<<", 3) == 0)
-        {
-            tmp = tmp->next; // skip redirection symbol
-            if (tmp)
-                tmp = tmp->next; // skip redirection target
-            continue ;
-        }
         count++;
-        tmp = tmp->next;
+        cmds = cmds->next;
     }
-    cmd = malloc(sizeof(char *) * (count + 1));
-    if (!cmd)
-        return (NULL);
-    i = 0;
-    while (tokens && strncmp(tokens->token, "|", 2) != 0)
-    {
-        if (strncmp(tokens->token, ">", 2) == 0
-            || strncmp(tokens->token, ">>", 3) == 0
-            || strncmp(tokens->token, "<", 2) == 0
-            || strncmp(tokens->token, "<<", 3) == 0)
-        {
-            tokens = tokens->next;
-            if (tokens)
-                tokens = tokens->next;
-            continue ;
-        }
-        cmd[i++] = ft_strdup(tokens->token);
-        tokens = tokens->next;
-    }
-    cmd[i] = NULL;
-    return (cmd);
+    return (count);
 }
 
-/* splits t_lexer on pipes, builds t_parse linked list */
-t_parse *split_into_processes(t_lexer *head)
-{
-    t_parse     *parse_list;
-    t_parse     *current;
-    t_parse     *new_node;
-    t_lexer     *tmp;
-
-    if (!head)
-        return (NULL);
-    parse_list = NULL;
-    current = NULL;
-    tmp = head;
-    while (tmp)
-    {
-        new_node = malloc(sizeof(t_parse));
-        if (!new_node)
-            return (NULL);
-        new_node->cmd = organize(tmp);
-        new_node->next = NULL;
-        if (!parse_list)
-        {
-            parse_list = new_node;
-            current = parse_list;
-        }
-        else
-        {
-            current->next = new_node;
-            current = current->next;
-        }
-        // advance tmp past current command and its pipe
-        while (tmp && strncmp(tmp->token, "|", 2) != 0)
-            tmp = tmp->next;
-        if (tmp && strncmp(tmp->token, "|", 2) == 0)
-            tmp = tmp->next; // skip the pipe itself
-    }
-    return (parse_list);
-}
-
-/* extracts char*** from t_parse list to feed into work() */
-static char ***parse_to_cmds(t_parse *list, int len)
+/* extracts char*** from t_cmd list */
+static char ***cmds_to_array(t_cmd *list, int len)
 {
     char    ***cmds;
     int     i;
@@ -172,7 +68,7 @@ static char ***parse_to_cmds(t_parse *list, int len)
     i = 0;
     while (list && i < len)
     {
-        cmds[i] = list->cmd;
+        cmds[i] = list->args;
         list = list->next;
         i++;
     }
@@ -180,54 +76,32 @@ static char ***parse_to_cmds(t_parse *list, int len)
     return (cmds);
 }
 
-/* the main entry point — ties everything together */
-int are_we_gonna_split(t_lexer *head, t_env **env)
+int are_we_gonna_split(t_lexer *tokens, t_env **env)
 {
-    t_parse     *parse_list;
-    char        ***cmds;
-    int         len;
+    t_cmd   *cmd_list;
+    int     len;
+    pid_t   pid;
+    int     status;
 
-    if (!head)
+    if (!tokens)
         return (1);
-    len = count_commands(head);
+    cmd_list = parse(tokens);
+    if (!cmd_list)
+        return (1);
+    len = count_commands(cmd_list);
     if (len == 1)
     {
-        // no pipes — run directly
-        char **cmd = organize(head);
-        apply_redirections(head);
-        return (execute_command(cmd, env), 0);
+        pid = fork();
+        if (pid < 0)
+            return (1);
+        if (pid == 0)
+        {
+            apply_redirections(cmd_list);
+            execute_command(cmd_list->args, env);
+        }
+        waitpid(pid, &status, 0);
+        free_cmd_list(cmd_list);
+        return (WEXITSTATUS(status));
     }
-    parse_list = split_into_processes(head);
-    if (!parse_list)
-        return (1);
-    cmds = parse_to_cmds(parse_list, len);
-    if (!cmds)
-        return (1);
-    return (work(len, cmds, env));
+    return (work(len, cmd_list, env));
 }
-// ```
-
-// ---
-
-// **How it all connects now:**
-// ```
-// are_we_gonna_split(head, env)
-//     │
-//     ├── 1 command?  ──► organize() ──► apply_redirections() ──► execute_command()
-//     │
-//     └── multiple?
-//             │
-//             ▼
-//       split_into_processes()     ← splits t_lexer on | into t_parse list
-//             │
-//             ▼
-//       parse_to_cmds()            ← extracts char*** from t_parse
-//             │
-//             ▼
-//       work(len, cmds, env)       ← your pipe/fork engine from before
-//             │
-//             ▼
-//       create_processes()         ← forks children, wires pipes
-//             │
-//             ▼
-//       apply_redirections()  +  execute_command()   ← runs in each child

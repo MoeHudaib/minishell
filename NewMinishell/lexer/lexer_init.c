@@ -1,6 +1,6 @@
 #include "../organize.h"
 
-t_lexer *lexer_init(char *data)
+t_lexer *lexer_init(char *data, t_token_type type)
 {
     t_lexer *lexer;
 
@@ -9,50 +9,17 @@ t_lexer *lexer_init(char *data)
     lexer = malloc(sizeof(t_lexer));
     if (!lexer)
         return (NULL);
-    lexer->double_quote = 0; // Make a good use of em to maximize ur profit of tokenization 
-    lexer->single_quote = 0; // Make a good use of em to maximize ur profit of tokenization, They are not being used yet
     lexer->token = ft_strdup(data);
     if (!lexer->token)
     {
         free(lexer);
         return (NULL);
     }
+    lexer->type = type;
+    lexer->single_quote = 0;
+    lexer->double_quote = 0;
     lexer->next = NULL;
     return (lexer);
-}
-
-t_lexer	*add_new_token_front(t_lexer **lexer_head, char *data)
-{
-    t_lexer	*new_lexer;
-
-    if (!lexer_head || !*lexer_head || !data)
-    {
-        return (NULL);
-    }
-    new_lexer = lexer_init(data);
-    if (!new_lexer)
-    {
-        return (NULL);
-    }
-    new_lexer->next = *lexer_head;
-    *lexer_head = new_lexer;
-    return (*lexer_head);
-}
-
-t_lexer	*add_new_token_back(t_lexer **lexer_head, char *data)
-{
-    t_lexer	*new_lexer;
-
-    if (!lexer_head || !*lexer_head || !data)
-    {
-        return (NULL);
-    }
-    new_lexer = lexer_init(data);
-    if (!new_lexer)
-    {
-        return (NULL);
-    }
-    return (add_token_back(lexer_head, new_lexer));
 }
 
 t_lexer *add_token_back(t_lexer **lexer_head,t_lexer *lexer)
@@ -66,6 +33,18 @@ t_lexer *add_token_back(t_lexer **lexer_head,t_lexer *lexer)
         current = current->next;
     current->next = lexer;
     return (*lexer_head);
+}
+
+t_lexer *add_new_token_back(t_lexer **lexer_head, char *data, t_token_type type)
+{
+    t_lexer *new_lexer;
+
+    if (!lexer_head || !*lexer_head || !data)
+        return (NULL);
+    new_lexer = lexer_init(data, type);
+    if (!new_lexer)
+        return (NULL);
+    return (add_token_back(lexer_head, new_lexer));
 }
 
 void	delete_lexer(t_lexer **head)

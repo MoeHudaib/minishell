@@ -95,3 +95,18 @@ int main()
 
 	return 0;
 }
+
+
+
+// ls -la -m | grep "txt" > output.txt
+// cmd1 -> ls -la -m  // process1
+// cmd2 -> grep "txt" // process2
+// cmd3 -> output.txt // process3
+// TO do LIST :
+
+// 1.  Has complex function: checks if the command is simple or complex (pipes, redirections, etc.) in order to decide how to execute it
+// 1.1 If simple -> organize() -> execute_command()
+// 1.2 If complex -> are_we_gonna_split() -> split_into_processes() -> parse_to_cmds()
+// 1.3 the final shape of the tokens should be a list of char*** (array of commands, each command is an array of strings) in order to be ready for the execution phase
+// 2. apply redirections if existed
+// 3. 
