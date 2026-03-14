@@ -2,23 +2,23 @@
 
 void	*free_tokens(char **tokens, char *line, t_lexer **lexer_head)
 {
-	int	i;
+    int	i;
 
-	if (tokens)
-	{
-		i = 0;
-		while (tokens[i])
-		{
-			free(tokens[i]);
-			i++;
-		}
-		free(tokens);
-	}
-	if (line)
-		free(line);
-	if (lexer_head)
-		delete_lexer(lexer_head);
-	return (NULL);
+    if (tokens)
+    {
+        i = 0;
+        while (tokens[i])
+        {
+            free(tokens[i]);
+            i++;
+        }
+        free(tokens);
+    }
+    if (line)
+        free(line);
+    if (lexer_head)
+        delete_lexer(lexer_head);
+    return (NULL);
 }
 
 static void free_redirs(t_redir *redir)
@@ -28,6 +28,8 @@ static void free_redirs(t_redir *redir)
     while (redir)
     {
         tmp = redir->next;
+        if (redir->type == TOKEN_HEREDOC && redir->fd >= 0)
+            close(redir->fd);           // close pipe read-end if never consumed
         free(redir->file);
         free(redir);
         redir = tmp;

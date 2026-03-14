@@ -12,9 +12,13 @@ void execute_command(char **cmd, t_env **env)
     path = build_path(env, cmd[0]);
     if (!path)
     {
-        printf("command not found: %s\n", cmd[0]);
+        ft_putstr_fd("minishell: command not found: ", STDERR_FILENO);
+        ft_putendl_fd(cmd[0], STDERR_FILENO);
         exit(127);
     }
     execve(path, cmd, env_to_array(*env));
-    exit(1);
+    // execve only returns on failure
+    ft_putstr_fd("minishell: ", STDERR_FILENO);
+    ft_putendl_fd(cmd[0], STDERR_FILENO);
+    exit(126);
 }

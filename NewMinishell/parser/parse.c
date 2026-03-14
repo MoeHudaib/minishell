@@ -72,6 +72,8 @@ static t_redir *new_redir(t_token_type type, char *file)
         return (NULL);
     redir->type = type;
     redir->file = ft_strdup(file);
+    redir->fd = -1;      // ← fix: safe sentinel, not garbage
+    redir->expand = 0;
     redir->next = NULL;
     return (redir);
 }
@@ -112,8 +114,24 @@ t_cmd *parse(t_lexer *tokens)
         }
         else if (is_redir(tokens->type))
         {
-            redir_type = tokens->type;  // save it
-            tokens = tokens->next;      // advance to filename
+            redir_type = tokens->type;
+            tokens = tokens->next;
+            if (!tokens)
+            {
+                ft_putendl_fd("minishell: syntax error near unexpected token `newline'", STDERR_FILENO);
+                free_cmd_list(head);
+                free(current);
+                return (NULL);
+            }
+            if (tokens->type != TOKEN_WORD)
+            {
+                ft_putstr_fd("minishell: syntax error near unexpected token `", STDERR_FILENO);
+                ft_putstr_fd(tokens->token, STDERR_FILENO);
+                ft_putendl_fd("'", STDERR_FILENO);
+                free_cmd_list(head);
+                free(current);
+                return (NULL);
+            }
             add_redir(current, redir_type, tokens->token);
         }
         tokens = tokens->next;

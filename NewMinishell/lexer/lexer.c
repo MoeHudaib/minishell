@@ -26,28 +26,26 @@ int	has_unclosed_quotes(const char *s)
 	return (quote != 0);
 }
 
-char	*read_full_input(char *str)
+char *read_full_input(char *str)
 {
-	char *line;
-	char *temp;
-	char *cwd = ft_strjoin(str, "> ");
-	char *full = readline(cwd);
-	while (full && has_unclosed_quotes(full))
-	{
-		temp = readline("> ");
-		if (!temp)
-		{
-			free(full);     // free what we have so far
-			return (NULL);  // treat as ctrl+D
-		}
-		char *joined = malloc(strlen(full) + strlen(temp) + 2);
-		sprintf(joined, "%s\n%s", full, temp);
-		free(full);
-		free(temp);
-		full = joined;
-	}
-	free(cwd);
-	return (full);
+    char *full = readline(str);    // use str directly, no ft_strjoin
+    char *temp;
+
+    while (full && has_unclosed_quotes(full))
+    {
+        temp = readline("> ");
+        if (!temp)
+        {
+            free(full);
+            return (NULL);
+        }
+        char *joined = malloc(ft_strlen(full) + ft_strlen(temp) + 2);
+        sprintf(joined, "%s\n%s", full, temp);
+        free(full);
+        free(temp);
+        full = joined;
+    }
+    return (full);
 }
 
 

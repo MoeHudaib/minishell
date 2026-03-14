@@ -28,6 +28,7 @@ SRCS= ./lexer/lexer.c \
 	./env/unset.c \
 	./env/env_to_array.c \
 	./expander/expander.c \
+	./parser/prepare_heredocs.c \
 	./expander/expander_utils.c \
 	./lexer/main.c 
 

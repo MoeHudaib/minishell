@@ -39,14 +39,14 @@ typedef struct s_env
 
 t_env   *set_env(char **env);
 t_env   *seperate_key_value(char *line, t_env *new_one);
-char    **env_to_array(t_env *head);
-
 t_env   *add_last(t_env **head, t_env *node);
+char    **env_to_array(t_env *head);
+char    *get_env_value(char *key, char **env);
 int     print_list(t_env *head);
 void    envclear(t_env **head);
 int     ft_unset(t_env **head, char *key);
 int     ft_export(t_env **head, char *line);
-char    *get_env_value(char *key, char **env);
+
 
 /*
 ** ============================================================
@@ -64,10 +64,10 @@ typedef enum e_token_type
 {
     TOKEN_WORD,        // echo, hello, filename
     TOKEN_PIPE,        // |
-    TOKEN_REDIR_IN,    // 
+    TOKEN_REDIR_IN,    // <
     TOKEN_REDIR_OUT,   // >
     TOKEN_REDIR_APPEND,// >>
-    TOKEN_HEREDOC,     // 
+    TOKEN_HEREDOC,     // <<
     TOKEN_AND,         // &&
     TOKEN_OR,          // ||
     TOKEN_EOF
@@ -84,15 +84,15 @@ typedef struct s_lexer
 
 char    *read_full_input(char *str);
 char **split_with_quotes(const char *str, t_token_type *types);
-t_lexer *lexer_init(char *data, t_token_type type);
-t_lexer *lex_line(char *line);
-t_lexer *add_token_back(t_lexer **lexer_head, t_lexer *lexer);
-t_lexer *add_new_token_back(t_lexer **lexer_head, char *data, t_token_type type);
-void    delete_lexer(t_lexer **head);
-void    *free_tokens(char **tokens, char *line, t_lexer **lexer_head);
-void    print_tokens(t_lexer *lexer_head);
-int     is_it_simple_exe(char *line);
 int     has_unclosed_quotes(const char *s);
+
+t_lexer *lexer_init(char *data, t_token_type type);
+t_lexer *add_new_token_back(t_lexer **lexer_head, char *data, t_token_type type);
+t_lexer *add_token_back(t_lexer **lexer_head, t_lexer *lexer);
+void    *free_tokens(char **tokens, char *line, t_lexer **lexer_head);
+t_lexer *lex_line(char *line);
+void    delete_lexer(t_lexer **head);
+void    print_tokens(t_lexer *lexer_head);
 char    **organize(t_lexer *tokens);
 
 /*
@@ -102,11 +102,11 @@ char    **organize(t_lexer *tokens);
 ** ============================================================
 */
 
+int  is_valid_var_char(char c);
 void expand_lexer_tokens(t_lexer *tokens, int last_status, t_env *env);
-char *get_exit_status(int status);
 char *expand_token(char *token, int last_status, char **env);
 char *expand_dollar(const char *str, int *i, int last_status, char **env);
-int is_valid_var_char(char c);
+char *get_exit_status(int status);
 
 /*
 ** ============================================================
@@ -118,6 +118,8 @@ typedef struct s_redir
 {
     t_token_type    type;    // REDIR_IN, REDIR_OUT, APPEND, HEREDOC
     char            *file;   // filename or heredoc delimiter
+    int             fd;         // heredoc pipe read end
+    int             expand;
     struct s_redir  *next;
 }   t_redir;
 
@@ -136,15 +138,18 @@ char    *try_path(char *cmd, char *path);
 char    *return_path(t_env *head);
 char    *free_enp(char **enp);
 char    *build_path(t_env **head, char *cmd);
-int     has_complex(t_lexer *tokens);
-int are_we_gonna_split(t_lexer *tokens, t_env **env);
+
+
 t_cmd   *parse(t_lexer *tokens);
+int     has_complex(t_lexer *tokens);
+int is_redir(t_token_type type);
+int apply_redirections(t_cmd *cmd);
 void add_arg(t_cmd *cmd, char *arg);
 void add_redir(t_cmd *cmd, t_token_type type, char *file);
 void append_cmd(t_cmd **head, t_cmd *cmd);
-int is_redir(t_token_type type);
-int apply_redirections(t_cmd *cmd);
+int are_we_gonna_split(t_lexer *tokens, t_env **env);
 void free_cmd_list(t_cmd *cmd_list);
+int prepare_heredocs(t_cmd *cmd_list);
 
 /*
 ** ============================================================
@@ -170,7 +175,7 @@ int     exec_builtin(char **cmd, t_env **env);
 
 void    execute_command(char **cmd, t_env **env);
 int work(int len_of_exe, t_cmd *cmd_list, t_env **env);
-int create_processes(int len_of_exe, int fd[len_of_exe - 1][2], t_cmd *cmd_list, t_env **env);
+int create_processes(int len_of_exe, int fd[len_of_exe - 1][2], t_cmd *cmd_list, t_env **env, pid_t *pids);
 
 
 /*
@@ -179,9 +184,13 @@ int create_processes(int len_of_exe, int fd[len_of_exe - 1][2], t_cmd *cmd_list,
 ** depends on: nothing (uses only globals)
 ** ============================================================
 */
-extern int  g_signal;
+// The ONE allowed global: only stores the signal number, nothing else.
+extern volatile sig_atomic_t g_sig;
 
-// void    setup_signals(void);
+void signals_child(void);
+void signals_reset_child(void);
+void signals_heredoc(void);
+void signals_interactive(void);
 
 #endif
 
