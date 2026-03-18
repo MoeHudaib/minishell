@@ -15,6 +15,27 @@ static t_env	*new_node(char *key, char *value)
 	return (new_one);
 }
 
+t_env	*update_env(char *key, char *value, t_env **head)
+{
+	t_env		*current;
+	size_t		len;
+	char		*tmp;
+
+	len = ft_strlen(key);
+	current = *head;
+	while (current)
+	{
+		if (strncmp(current->key, key, len) == 0)
+		{
+			tmp = current->value;
+			current->value = ft_strdup(value);
+			free(tmp);
+		}
+		current = current->next;
+	}
+	return (*head);
+}
+
 t_env	*add_last(t_env **head, t_env *node)
 {
 	t_env	*current;
@@ -84,7 +105,7 @@ int	print_list(t_env *head)
 
 	if (!head)
 	{
-		return 1;
+		return (1);
 	}
 	current = head;
 	while (current)
@@ -96,7 +117,7 @@ int	print_list(t_env *head)
 	return (0);
 }
 
-t_env    *set_env(char **env)
+t_env	*set_env(char **env)
 {
 	int		i;
 	t_env	*head;
@@ -110,14 +131,23 @@ t_env    *set_env(char **env)
 		add_last(&head, tmp);
 		i++;
 	}
-    return (head);
+	return (head);
 }
 
 // int	main(int ac, char **av, char **env)
 // {
-//     t_env *head;
+//	 t_env *head;
+// 	char buf[1024];
 
-//     head = set_env(env);
-//     print_list(head);
+//	 head = set_env(env);
+//	 print_list(head);
+// 	char *pwd = getcwd(buf, 1024);
+// 	printf("\n%s\n", pwd);
+// 	char *old_pwd = getcwd(buf, 1024);
+// 	printf("\n%s\n", old_pwd);
+// 	printf("\n%s\n", buf);
+// 	update_env("PWD", "HELLO", &head);
+// 	print_list(head);
+// 	envclear(&head);
 // 	return (0);
 // }

@@ -22,7 +22,7 @@ SRCS= ./lexer/lexer.c \
 	./builtins/ft_cd.c \
 	./exe/simple_exe.c \
 	./exe/multiple_pipes.c \
-	./lexer/organize.c \
+	./signals/signals.c \
 	./env/env.c \
 	./env/export.c \
 	./env/unset.c \

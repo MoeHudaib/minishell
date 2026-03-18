@@ -4,9 +4,11 @@
 
 int	has_unclosed_quotes(const char *s)
 {
-	int		i = 0;
-	char	quote = 0;
+	int		i;
+	char	quote;
 
+	i = 0;
+	quote = 0;
 	while (s[i])
 	{
 		if (s[i] == '\\' && quote != '\'')
@@ -28,64 +30,66 @@ int	has_unclosed_quotes(const char *s)
 
 char *read_full_input(char *str)
 {
-    char *full = readline(str);    // use str directly, no ft_strjoin
-    char *temp;
+	char *full;
+	char *temp;
+	char *joined;
 
-    while (full && has_unclosed_quotes(full))
-    {
-        temp = readline("> ");
-        if (!temp)
-        {
-            free(full);
-            return (NULL);
-        }
-        char *joined = malloc(ft_strlen(full) + ft_strlen(temp) + 2);
-        sprintf(joined, "%s\n%s", full, temp);
-        free(full);
-        free(temp);
-        full = joined;
-    }
-    return (full);
+	full = readline(str);
+	while (full && has_unclosed_quotes(full))
+	{
+		temp = readline("> ");
+		if (!temp)
+		{
+			free(full);
+			return (NULL);
+		}
+		joined = malloc(ft_strlen(full) + ft_strlen(temp) + 2);
+		sprintf(joined, "%s\n%s", full, temp);
+		free(full);
+		free(temp);
+		full = joined;
+	}
+	return (full);
 }
 
 
 
 static t_lexer *create_lexer_list(char **tokens, t_token_type *types)
 {
-    t_lexer *head;
-    t_lexer *current;
-    int     i;
+	t_lexer *head;
+	t_lexer *current;
+	int	 i;
 
-    i = 0;
-    head = lexer_init(tokens[i], types[i]);
-    if (!head)
-        return (NULL);
-    i++;
-    current = head;
-    while (tokens[i])
-    {
-        current = add_new_token_back(&head, tokens[i], types[i]);
-        if (!current)
-            return (free_tokens(tokens, NULL, &head));
-        i++;
-    }
-    return (head);
+	i = 0;
+	head = lexer_init(tokens[i], types[i]);
+	if (!head)
+		return (NULL);
+	i++;
+	current = head;
+	while (tokens[i])
+	{
+		current = add_new_token_back(&head, tokens[i], types[i]);
+		if (!current)
+			return (free_tokens(tokens, NULL, &head));
+		i++;
+	}
+	return (head);
 }
 
 t_lexer *lex_line(char *line)
 {
-    t_lexer         *lexer_head;
-    char            **tokens;
-    t_token_type    types[1024];
+	t_lexer		 *lexer_head;
+	char			**tokens;
+	t_token_type	types[1024];
 
-    if (!line)
-        return (NULL);
-    tokens = split_with_quotes(line, types);
-    if (!tokens)
-        return (NULL);
-    lexer_head = create_lexer_list(tokens, types);
-    free_tokens(tokens, NULL, NULL);
-    return (lexer_head);
+	if (!line)
+		return (NULL);
+	tokens = split_with_quotes(line, types);
+	if (!tokens)
+		return (NULL);
+	lexer_head = create_lexer_list(tokens, types);
+	free_tokens(tokens, NULL, NULL);
+	return (lexer_head);
 }
 
 void	print_tokens(t_lexer *lexer_head)

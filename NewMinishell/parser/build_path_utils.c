@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parse_utils.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/06 11:08:07 by mhdeeb            #+#    #+#             */
-/*   Updated: 2026/03/13 06:06:26 by mohammad         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../organize.h"
 
 char	*try_path(char *cmd, char *path)//this function is used to combine the cmd with '/' before the combines it with the path Example: cmd, usr/bin -> usr/bin/cmd
