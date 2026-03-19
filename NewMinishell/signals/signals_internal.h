@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   signals_internal.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/19 05:47:02 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 05:47:03 by mohammad         ###   ########.fr       */
+/*   Created: 2026/03/19 06:01:57 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 06:01:57 by mohammad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../organize.h"
+#ifndef SIGNALS_INTERNAL_H
+# define SIGNALS_INTERNAL_H
 
-int	ft_env(t_env *env)
-{
-	while (env)
-	{
-		printf("%s=%s\n", env->key, env->value);
-		env = env->next;
-	}
-	return (0);
-}
+# include "../organize.h"
+
+/*
+** Internal signal handlers used by signals.c ONLY.
+** Do NOT include this anywhere else.
+*/
+
+void	sigint_interactive(int sig);
+void	sigint_heredoc(int sig);
+void	sigint_child(int sig);
+void	sigquit_child(int sig);
+
+#endif

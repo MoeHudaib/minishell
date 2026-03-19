@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/19 05:46:50 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 05:46:51 by mohammad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../organize.h"
 
 int	ft_isnumeric(char *str)
@@ -21,23 +33,22 @@ int	ft_isnumeric(char *str)
 int	is_builtin(char *cmd)
 {
 	if (!cmd)
-		return 0;
-
+		return (0);
 	if (!ft_strcmp(cmd, "cd"))
-		return 1;
+		return (1);
 	if (!ft_strcmp(cmd, "echo"))
-		return 1;
+		return (1);
 	if (!ft_strcmp(cmd, "pwd"))
-		return 1;
+		return (1);
 	if (!ft_strcmp(cmd, "export"))
-		return 1;
+		return (1);
 	if (!ft_strcmp(cmd, "unset"))
-		return 1;
+		return (1);
 	if (!ft_strcmp(cmd, "env"))
-		return 1;
+		return (1);
 	if (!ft_strcmp(cmd, "exit"))
-		return 1;
-	return 0;
+		return (1);
+	return (0);
 }
 
 int	exec_builtin(char **cmd, t_env **env, int last_status)

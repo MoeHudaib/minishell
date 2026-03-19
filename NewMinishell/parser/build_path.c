@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   build_path.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/19 05:49:15 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 05:49:16 by mohammad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../organize.h"
 
-static char	*check_path_dir(char **dirs, char *cmd, int i) // done
+static char	*check_path_dir(char **dirs, char *cmd, int i)
 {
 	char	*path;
 
@@ -19,7 +31,7 @@ static char	*check_path_dir(char **dirs, char *cmd, int i) // done
 	return (NULL);
 }
 
-static char	*find_valid_path(char **dirs, char *cmd) // done 
+static char	*find_valid_path(char **dirs, char *cmd)
 {
 	int		i;
 	char	*path;
@@ -52,14 +64,14 @@ char	*build_path(t_env **head, char *cmd)
 		return (NULL);
 	if (access(cmd, F_OK) == 0 && access(cmd, X_OK) == 0)
 		return (ft_strdup(cmd));
-	path_line = return_path(*head); // it loops through env looking for "PATH=" if existed returns it if not returns null
+	path_line = return_path(*head);
 	if (!path_line)
 		return (NULL);
-	dirs = ft_split(path_line, ':'); // this splits the "PATH=" into dirs 
+	dirs = ft_split(path_line, ':');
 	free(path_line);
 	if (!dirs)
 		return (NULL);
-	path = find_valid_path(dirs, cmd); // this loops through all dirs found in "PATH=" in order to look for a valid one then returns it and if none found returns NULL
+	path = find_valid_path(dirs, cmd);
 	return (path);
 }
 

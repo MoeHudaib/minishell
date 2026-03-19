@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   build_path_utils.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/19 05:49:10 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 05:49:11 by mohammad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../organize.h"
 
-char	*try_path(char *cmd, char *path)//this function is used to combine the cmd with '/' before the combines it with the path Example: cmd, usr/bin -> usr/bin/cmd
+char	*try_path(char *cmd, char *path)
 {
 	char	*new_cmd;
 	char	*new_path;
@@ -17,7 +29,7 @@ char	*try_path(char *cmd, char *path)//this function is used to combine the cmd 
 	return (new_path);
 }
 
-char	*return_path(t_env *head) // done
+char	*return_path(t_env *head)
 {
 	t_env	*current;
 
@@ -33,7 +45,7 @@ char	*return_path(t_env *head) // done
 	return (NULL);
 }
 
-char	*free_enp(char **enp) // done 
+char	*free_enp(char **enp)
 {
 	int	i;
 

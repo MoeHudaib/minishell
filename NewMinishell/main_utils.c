@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   main_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/19 05:47:02 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 05:47:03 by mohammad         ###   ########.fr       */
+/*   Created: 2026/03/19 06:29:56 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 06:33:52 by mohammad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../organize.h"
+#include "organize.h"
 
-int	ft_env(t_env *env)
+char	*build_prompt(t_env *env_list)
 {
-	while (env)
-	{
-		printf("%s=%s\n", env->key, env->value);
-		env = env->next;
-	}
-	return (0);
+	char	*cwd;
+	char	*prompt;
+
+	(void)env_list;
+	cwd = NULL;
+	if (!cwd)
+		return (ft_strdup("minishell$ "));
+	prompt = ft_strjoin(cwd, " minishell$ ");
+	return (prompt);
 }

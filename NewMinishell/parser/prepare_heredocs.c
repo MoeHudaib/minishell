@@ -1,6 +1,18 @@
-#include "../organize.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   prepare_heredocs.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/19 05:59:06 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 05:59:07 by mohammad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-static int	read_heredoc(t_redir *redir, int write_fd)
+#include "heredoc_internal.h"
+
+int	read_heredoc(t_redir *redir, int write_fd)
 {
 	char	*line;
 
@@ -27,49 +39,7 @@ static int	read_heredoc(t_redir *redir, int write_fd)
 	return (1);
 }
 
-static int	count_heredocs(t_cmd *cmd)
-{
-	t_redir	*redir;
-	int		count;
-
-	count = 0;
-	redir = cmd->redirs;
-	while (redir)
-	{
-		if (redir->type == TOKEN_HEREDOC)
-			count++;
-		redir = redir->next;
-	}
-	return (count);
-}
-
-static int	single_heredoc(t_cmd *cmd)
-{
-	t_redir	*redir;
-	int		pipe_fd[2];
-
-	redir = cmd->redirs;
-	while (redir)
-	{
-		if (redir->type == TOKEN_HEREDOC)
-		{
-			if (pipe(pipe_fd) < 0)
-				return (0);
-			if (!read_heredoc(redir, pipe_fd[1]))
-			{
-				close(pipe_fd[0]);
-				close(pipe_fd[1]);
-				return (0);
-			}
-			close(pipe_fd[1]);
-			redir->fd = pipe_fd[0];
-		}
-		redir = redir->next;
-	}
-	return (1);
-}
-
-static int	copy_pipe(int from_fd, int to_fd)
+int	copy_pipe(int from_fd, int to_fd)
 {
 	char	buf[4096];
 	ssize_t	n;
@@ -83,7 +53,7 @@ static int	copy_pipe(int from_fd, int to_fd)
 	return (1);
 }
 
-static int	process_heredoc(t_redir *redir, int combined_pipe[2])
+int	process_heredoc(t_redir *redir, int combined_pipe[2])
 {
 	int	pipe_fd[2];
 
@@ -99,7 +69,7 @@ static int	process_heredoc(t_redir *redir, int combined_pipe[2])
 	return (1);
 }
 
-static int	fill_combined(t_cmd *cmd, int combined_pipe[2])
+int	fill_combined(t_cmd *cmd, int combined_pipe[2])
 {
 	t_redir	*redir;
 
@@ -114,7 +84,7 @@ static int	fill_combined(t_cmd *cmd, int combined_pipe[2])
 	return (1);
 }
 
-static int	assign_combined(t_cmd *cmd, int combined_pipe[2])
+int	assign_combined(t_cmd *cmd, int combined_pipe[2])
 {
 	t_redir	*redir;
 
@@ -130,37 +100,5 @@ static int	assign_combined(t_cmd *cmd, int combined_pipe[2])
 		redir = redir->next;
 	}
 	close(combined_pipe[0]);
-	return (1);
-}
-
-static int	multi_heredoc(t_cmd *cmd)
-{
-	int	combined_pipe[2];
-
-	if (pipe(combined_pipe) < 0)
-		return (0);
-	if (!fill_combined(cmd, combined_pipe))
-		return (0);
-	return (assign_combined(cmd, combined_pipe));
-}
-
-static int	prepare_cmd_heredocs(t_cmd *cmd)
-{
-	if (count_heredocs(cmd) <= 1)
-		return (single_heredoc(cmd));
-	return (multi_heredoc(cmd));
-}
-
-int	prepare_heredocs(t_cmd *cmd_list)
-{
-	t_cmd	*current;
-
-	current = cmd_list;
-	while (current)
-	{
-		if (!prepare_cmd_heredocs(current))
-			return (0);
-		current = current->next;
-	}
 	return (1);
 }

@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_env.c                                           :+:      :+:    :+:   */
+/*   parse_internal.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/19 05:47:02 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 05:47:03 by mohammad         ###   ########.fr       */
+/*   Created: 2026/03/19 05:56:53 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 05:56:54 by mohammad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../organize.h"
+#ifndef PARSE_INTERNAL_H
+# define PARSE_INTERNAL_H
 
-int	ft_env(t_env *env)
-{
-	while (env)
-	{
-		printf("%s=%s\n", env->key, env->value);
-		env = env->next;
-	}
-	return (0);
-}
+# include "../organize.h"
+
+/*
+** Internal helpers shared between parse.c and parse_utils.c ONLY.
+** Do NOT include this anywhere else.
+*/
+
+/* parse_utils.c */
+t_cmd	*new_cmd(void);
+
+#endif

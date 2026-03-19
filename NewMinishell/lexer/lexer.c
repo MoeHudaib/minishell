@@ -1,6 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/19 05:48:57 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 05:49:00 by mohammad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../organize.h"
-# include <readline/readline.h>
-# include <readline/history.h>
 
 int	has_unclosed_quotes(const char *s)
 {
@@ -28,11 +38,11 @@ int	has_unclosed_quotes(const char *s)
 	return (quote != 0);
 }
 
-char *read_full_input(char *str)
+char	*read_full_input(char *str)
 {
-	char *full;
-	char *temp;
-	char *joined;
+	char	*full;
+	char	*temp;
+	char	*joined;
 
 	full = readline(str);
 	while (full && has_unclosed_quotes(full))
@@ -52,13 +62,11 @@ char *read_full_input(char *str)
 	return (full);
 }
 
-
-
-static t_lexer *create_lexer_list(char **tokens, t_token_type *types)
+static t_lexer	*create_lexer_list(char **tokens, t_token_type *types)
 {
-	t_lexer *head;
-	t_lexer *current;
-	int	 i;
+	t_lexer	*head;
+	t_lexer	*current;
+	int		i;
 
 	i = 0;
 	head = lexer_init(tokens[i], types[i]);
@@ -76,9 +84,9 @@ static t_lexer *create_lexer_list(char **tokens, t_token_type *types)
 	return (head);
 }
 
-t_lexer *lex_line(char *line)
+t_lexer	*lex_line(char *line)
 {
-	t_lexer		 *lexer_head;
+	t_lexer			*lexer_head;
 	char			**tokens;
 	t_token_type	types[1024];
 

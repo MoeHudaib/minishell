@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   clean.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/19 05:48:43 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 05:48:44 by mohammad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../organize.h"
 
 void	*free_tokens(char **tokens, char *line, t_lexer **lexer_head)
@@ -21,24 +33,24 @@ void	*free_tokens(char **tokens, char *line, t_lexer **lexer_head)
 	return (NULL);
 }
 
-static void free_redirs(t_redir *redir)
+static void	free_redirs(t_redir *redir)
 {
-	t_redir *tmp;
+	t_redir	*tmp;
 
 	while (redir)
 	{
 		tmp = redir->next;
 		if (redir->type == TOKEN_HEREDOC && redir->fd >= 0)
-			close(redir->fd);		   // close pipe read-end if never consumed
+			close(redir->fd);
 		free(redir->file);
 		free(redir);
 		redir = tmp;
 	}
 }
 
-static void free_args(char **args)
+static void	free_args(char **args)
 {
-	int i;
+	int	i;
 
 	if (!args)
 		return ;
@@ -51,9 +63,9 @@ static void free_args(char **args)
 	free(args);
 }
 
-void free_cmd_list(t_cmd *cmd_list)
+void	free_cmd_list(t_cmd *cmd_list)
 {
-	t_cmd *tmp;
+	t_cmd	*tmp;
 
 	while (cmd_list)
 	{

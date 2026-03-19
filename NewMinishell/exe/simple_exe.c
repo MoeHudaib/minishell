@@ -1,9 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   simple_exe.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/19 05:48:01 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 05:48:09 by mohammad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../organize.h"
 
-/* execute_command — runs in the already-forked child, no extra fork needed */
-void execute_command(char **cmd, t_env **env, int last_status)
+void	execute_command(char **cmd, t_env **env, int last_status)
 {
-	char *path;
+	char	*path;
 
 	if (!cmd || !cmd[0])
 		exit(1);

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/19 05:47:25 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 05:47:26 by mohammad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../organize.h"
 
 static t_env	*new_node(char *key, char *value)
@@ -34,42 +46,6 @@ t_env	*update_env(char *key, char *value, t_env **head)
 		current = current->next;
 	}
 	return (*head);
-}
-
-t_env	*add_last(t_env **head, t_env *node)
-{
-	t_env	*current;
-
-	if (!head || !node)
-		return (NULL);
-	if (!*head)
-	{
-		*head = node;
-		return (*head);
-	}
-	current = *head;
-	while (current->next)
-		current = current->next;
-	current->next = node;
-	return (*head);
-}
-void	envclear(t_env **head)
-{
-	t_env	*current;
-	t_env	*tmp;
-
-	if (!head || !*head)
-		return ;
-	current = *head;
-	while (current != NULL)
-	{
-		tmp = current;
-		current = current->next;
-		free(tmp->key);
-		free(tmp->value);
-		free(tmp);
-	}
-	*head = NULL;
 }
 
 t_env	*seperate_key_value(char *line, t_env *new_one)

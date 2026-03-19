@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer_init.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/03/19 05:48:48 by mohammad          #+#    #+#             */
+/*   Updated: 2026/03/19 05:48:48 by mohammad         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../organize.h"
 
-t_lexer *lexer_init(char *data, t_token_type type)
+t_lexer	*lexer_init(char *data, t_token_type type)
 {
-	t_lexer *lexer;
+	t_lexer	*lexer;
 
 	if (!data)
 		return (NULL);
@@ -22,9 +34,9 @@ t_lexer *lexer_init(char *data, t_token_type type)
 	return (lexer);
 }
 
-t_lexer *add_token_back(t_lexer **lexer_head,t_lexer *lexer)
+t_lexer	*add_token_back(t_lexer **lexer_head, t_lexer *lexer)
 {
-	t_lexer *current;
+	t_lexer	*current;
 
 	if (!lexer_head || !*lexer_head || !lexer)
 		return (NULL);
@@ -35,9 +47,9 @@ t_lexer *add_token_back(t_lexer **lexer_head,t_lexer *lexer)
 	return (*lexer_head);
 }
 
-t_lexer *add_new_token_back(t_lexer **lexer_head, char *data, t_token_type type)
+t_lexer	*add_new_token_back(t_lexer **lexer_head, char *data, t_token_type type)
 {
-	t_lexer *new_lexer;
+	t_lexer	*new_lexer;
 
 	if (!lexer_head || !*lexer_head || !data)
 		return (NULL);
