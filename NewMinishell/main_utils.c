@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 06:29:56 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 06:33:52 by mohammad         ###   ########.fr       */
+/*   Updated: 2026/03/26 12:47:37 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,16 @@ char	*build_prompt(t_env *env_list)
 		return (ft_strdup("minishell$ "));
 	prompt = ft_strjoin(cwd, " minishell$ ");
 	return (prompt);
+}
+
+void	rl_clear_history(void)
+{
+	clear_history();
+}
+
+void	cleanup_shell(t_env *env_list)
+{
+	if (env_list)
+		envclear(&env_list);
+	rl_clear_history();
 }

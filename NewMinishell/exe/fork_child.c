@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork_child.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 05:47:50 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 05:47:50 by mohammad         ###   ########.fr       */
+/*   Updated: 2026/03/26 12:26:06 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	fork_child(t_fork_args *a)
 	close_all_pipes(a->len_of_exe, a->fd);
 	if (apply_redirections(a->current))
 		exit(1);
-	execute_command(a->current->args, a->env, a->last_status);
+	execute_command(a->current, a->env, a->last_status);
 	return (0);
 }
 

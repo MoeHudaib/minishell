@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/19 06:28:50 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 06:33:59 by mohammad         ###   ########.fr       */
+/*   Created: 2026/03/26 12:32:15 by mhdeeb            #+#    #+#             */
+/*   Updated: 2026/03/26 12:35:48 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,14 @@ static char	*get_line(t_env *env_list)
 	char	*line;
 
 	prompt = build_prompt(env_list);
+	if (!prompt)
+		return (NULL);
 	line = read_full_input(prompt);
 	free(prompt);
 	return (line);
 }
 
-static int	shell_loop(t_env *env_list)
+static int	shell_loop(t_env **env_list)
 {
 	char	*line;
 	int		last_status;
@@ -59,26 +61,35 @@ static int	shell_loop(t_env *env_list)
 	while (1)
 	{
 		g_sig = 0;
-		line = get_line(env_list);
+		line = get_line(*env_list);
 		if (!line)
-			return (write(STDOUT_FILENO, "exit\n", 5), last_status);
+		{
+			write(STDOUT_FILENO, "exit\n", 5);
+			break ;
+		}
 		sig_check = handle_signal_or_empty(line, last_status);
 		if (sig_check != -1)
 		{
 			last_status = sig_check;
 			continue ;
 		}
-		last_status = process_line(line, &env_list, last_status);
+		last_status = process_line(line, env_list, last_status);
 	}
+	return (last_status);
 }
 
 int	main(int ac, char **av, char **env)
 {
 	t_env	*env_list;
+	int		exit_status;
 
 	(void)ac;
 	(void)av;
 	env_list = set_env(env);
+	if (!env_list)
+		return (1);
 	signals_interactive();
-	return (shell_loop(env_list));
+	exit_status = shell_loop(&env_list);
+	cleanup_shell(env_list);
+	return (exit_status);
 }

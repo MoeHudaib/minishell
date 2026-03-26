@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 06:11:42 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 06:13:38 by mohammad         ###   ########.fr       */
+/*   Updated: 2026/03/26 16:47:45 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static char	*append_dollar(char *result, t_expand *ctx)
 	return (tmp);
 }
 
-static char	*append_char(char *result, char c)
+char	*append_char(char *result, char c)
 {
 	char	*tmp;
 
@@ -39,16 +39,22 @@ static char	*expand_loop(char *result, char *token,
 	t_expand *ctx, char *quote)
 {
 	int	*i;
+	int	old_i;
 
 	i = ctx->i;
 	while (token[*i] && result)
 	{
-		if (token[*i] == '\'')
-			handle_single_quote(i, quote);
-		else if (token[*i] == '"')
-			handle_double_quote(i, quote);
+		if (token[*i] == '\\')
+			result = handle_backslash(result, token, i, *quote);
+		else if (token[*i] == '\'' || token[*i] == '"')
+			result = handle_quote(result, token, i, quote);
 		else if (token[*i] == '$' && *quote != '\'')
+		{
+			old_i = *i;
 			result = append_dollar(result, ctx);
+			if (*i == old_i)
+				(*i)++;
+		}
 		else
 			result = append_char(result, token[(*i)++]);
 		ctx->q = *quote;
@@ -83,13 +89,29 @@ void	expand_lexer_tokens(t_lexer *tokens, int last_status, t_env *env)
 		return ;
 	while (tokens)
 	{
-		if (!tokens->single_quote)
+		if (!tokens->single_quote && tokens->token)
 		{
 			expanded = expand_token(tokens->token, last_status, env_array);
-			free(tokens->token);
-			tokens->token = expanded;
+			if (expanded)
+			{
+				free(tokens->token);
+				tokens->token = expanded;
+			}
 		}
 		tokens = tokens->next;
 	}
-	free(env_array);
+	free_2d_array(env_array);
 }
+
+// int main(int ac, char **av, char **env)
+// {
+// 	t_lexer	*head;
+
+// 	char *line = readline(">");
+// 	head = lex_line(line);
+// 	print_tokens(head);
+// 	printf("\n\n");
+// 	t_env *envlist = set_env(env);
+// 	expand_lexer_tokens(head, 0, envlist);
+// 	print_tokens(head);
+// }

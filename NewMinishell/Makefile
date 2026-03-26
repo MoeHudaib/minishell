@@ -1,10 +1,17 @@
-CC= cc
+NAME	= minishell
 
-CFLAGS= -g
+# Compiler and compilation flags
+CC		= cc
+CFLAGS	= -Werror -Wextra -Wall -g
 
-NAME =minishell
+# Build files and directories
+INC_PATH = ./
 
-LIBS= ./libs/libft/libft.a -lreadline
+# Libft files and directories
+LIBFT_PATH	= ./libs/libft/
+LIBFT		= ./libs/libft/libft.a
+
+INC = -I $(INC_PATH) -I $(LIBFT_PATH)
 
 SRCS= ./lexer/lexer.c \
 	./lexer/clean.c \
@@ -46,12 +53,32 @@ SRCS= ./lexer/lexer.c \
 	./main_utils.c \
 	./main.c 
 
-$(NAME):
-	$(CC) $(CFLAGS) $(SRCS) $(LIBS) -o $(NAME)
+OBJS = $(SRCS:.c=.o)
 
+# Main rule
+all: $(LIBFT) $(NAME)
+
+# Objects rule
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@ $(INC)
+
+# Project file rule
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@ $(INC) $(LIBFT) -lreadline
+
+# Libft rule
+$(LIBFT):
+	make -C $(LIBFT_PATH)
+
+# Clean up build files rule
 clean:
+	rm -f $(OBJS)
 
+# Remove program executable
 fclean: clean
 	rm -f $(NAME)
 
-re: fclean $(NAME)
+# Clean + remove executable
+re: fclean all
+
+.PHONY: all re clean fclean

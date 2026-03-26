@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exe_run.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 05:47:44 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 05:47:45 by mohammad         ###   ########.fr       */
+/*   Updated: 2026/03/26 13:52:59 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	child_process(t_cmd *cmd_list, t_env **env, int last_status)
 		exit(1);
 	if (!cmd_list->args || !cmd_list->args[0])
 		exit(0);
-	execute_command(cmd_list->args, env, last_status);
+	execute_command(cmd_list, env, last_status);
 }
 
 int	wait_and_clean(pid_t pid, t_cmd *cmd_list)

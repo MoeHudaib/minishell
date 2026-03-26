@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   organize.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 06:16:37 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 06:33:49 by mohammad         ###   ########.fr       */
+/*   Updated: 2026/03/26 16:29:10 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ t_env	*seperate_key_value(char *line, t_env *new_one);
 t_env	*add_last(t_env **head, t_env *node);
 t_env	*update_env(char *key, char *value, t_env **head);
 char	**env_to_array(t_env *head);
+void	free_2d_array(char **arr);
 int		print_list(t_env *head);
 void	envclear(t_env **head);
 int		ft_export(t_env **head, char **cmd);
@@ -133,11 +134,12 @@ int		is_valid_var_char(char c);
 char	*get_exit_status(int status);
 char	*get_env_value(char *key, char **env);
 char	*ft_strjoin_char(char *s, char c);
-void	handle_single_quote(int *i, char *quote);
-void	handle_double_quote(int *i, char *quote);
+char	*handle_quote(char *result, char *token, int *i, char *quote);
 void	expand_lexer_tokens(t_lexer *tokens, int last_status, t_env *env);
 char	*expand_token(char *token, int last_status, char **env);
 char	*expand_dollar(const char *str, int *i, int last_status, char **env);
+char	*append_char(char *result, char c);
+char	*handle_backslash(char *result, char *token, int *i, char quote);
 
 /*
 ** ============================================================
@@ -197,7 +199,8 @@ int		ft_isnumeric(char *str);
 ** depends on: t_env, builtins, parse
 ** ============================================================
 */
-void	execute_command(char **cmd, t_env **env, int last_status);
+void	execute_command(t_cmd *cmd_list, t_env **env, int last_status);
+void	free_clean(t_cmd *cmd_list, t_env **envlist);
 int		is_parent_builtin(char *cmd);
 
 /*
@@ -221,5 +224,7 @@ void	signals_interactive(void);
 */
 
 char	*build_prompt(t_env *env_list);
+void	rl_clear_history(void);
+void	cleanup_shell(t_env *env_list);
 
 #endif

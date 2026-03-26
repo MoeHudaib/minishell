@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexical_analysis.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 05:49:05 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 05:49:06 by mohammad         ###   ########.fr       */
+/*   Updated: 2026/03/26 16:45:49 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 static void	process_escape(const char *str, int *i, char *buf, int *b)
 {
-	if (str[*i + 1] == '"' || str[*i + 1] == '\\'
-		|| str[*i + 1] == '$' || str[*i + 1] == '`')
+	if (str[*i + 1])
 	{
+		buf[(*b)++] = '\\';
 		buf[(*b)++] = str[*i + 1];
 		*i += 2;
 	}
@@ -31,6 +31,7 @@ static void	process_char(const char *str, t_pchar *pc)
 	}
 	if (!pc->q && str[*pc->i] == '\\' && str[*pc->i + 1])
 	{
+		pc->buf[(*pc->b)++] = '\\';
 		pc->buf[(*pc->b)++] = str[*pc->i + 1];
 		*pc->i += 2;
 		return ;

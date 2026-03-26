@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_to_array.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mohammad <mohammad@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mhdeeb <mhdeeb@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/19 05:47:17 by mohammad          #+#    #+#             */
-/*   Updated: 2026/03/19 05:47:18 by mohammad         ###   ########.fr       */
+/*   Updated: 2026/03/26 12:44:05 by mhdeeb           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,18 @@ static char	*join_env(char *key, char *value)
 	return (env);
 }
 
+void	free_2d_array(char **arr)
+{
+	int	i;
+
+	if (!arr)
+		return ;
+	i = 0;
+	while (arr[i])
+		free(arr[i++]);
+	free(arr);
+}
+
 char	**env_to_array(t_env *head)
 {
 	char	**env;
@@ -53,7 +65,11 @@ char	**env_to_array(t_env *head)
 	{
 		env[i] = join_env(head->key, head->value);
 		if (!env[i])
+		{
+			env[i] = NULL;
+			free_2d_array(env);
 			return (NULL);
+		}
 		head = head->next;
 		i++;
 	}
